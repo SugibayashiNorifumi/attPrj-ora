@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="jp" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="adminLayout">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="utf-8"/>
+</head>
+<body>
+<div class="ui container" layout:fragment="content" th:remove="tag">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            組織管理
+                        </h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-tools">
+                        <div class="pull-left">
+                            <a class="btn btn-info" href="#">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div><!-- /.box-tools -->
+                    <div class="box-body no-padding">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                            <tr>
+                                <td>組織コード</td>
+                                <td>組織名</td>
+                            </tr>
+                            </thead>
+                            <tbody id="org-list">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            ユーザ管理
+                        </h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-tools">
+                        <div class="pull-left">
+                            <a class="btn btn-warning" href="#">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                            <a class="btn btn-info" href="#">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div><!-- /.box-tools -->
+                    <div class="box-body no-padding">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <td>ユーザID</td>
+                                <td>権限</td>
+                                <td>組織</td>
+                                <td>ユーザ名</td>
+                                <td>メール</td>
+                            </tr>
+                            </thead>
+                            <tbody id="user-list" >
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<div layout:fragment="script" th:remove="tag">
+    <script th:src="@{/js/lib/jsrender.min.js}"
+            src="../../static/js/lib/jsrender.min.js"></script>
+    <script th:src="@{/js/admin/user-org.js}"
+            src="../../static/js/admin/user-org.js"></script>
+
+    <script id="org-record-tmpl" type="text/x-jsrender">
+        <tr class="clickable" onclick="findUser('{{:orgCd}}')">
+            <td class="vert-align col-md-4">
+                {{:orgCd}}
+            </td>
+            <td class="vert-align col-md-7">
+                {{:orgName}}
+            </td>
+            <td class="vert-align col-md-1">
+                <i class="fa fa-minus text-danger"></i>
+            </td>
+        </tr>
+    </script>
+
+    <script id="user-record-tmpl" type="text/x-jsrender">
+        <tr>
+            <td class="vert-align col-md-1">
+                <input type="checkbox" class="form-control" value="{{:userId}}"/>
+            </td>
+            <td class="vert-align col-md-2">
+                {{:userId}}
+            </td>
+            <td class="vert-align col-md-2">
+                {{:authName}}
+            </td>
+            <td class="vert-align col-md-2">
+                {{:orgName}}
+            </td>
+            <td class="vert-align col-md-2">
+                {{:name}}
+            </td>
+            <td class="vert-align col-md-2">
+                {{:mail}}
+            </td>
+        </tr>
+    </script>
+</div>
+</body>
+</html>

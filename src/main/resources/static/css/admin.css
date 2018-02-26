@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+body {
+  font-family: 'FontAwesome';
+}
+
+.table tbody>tr>td.vert-align
+{
+    vertical-align: middle;
+}
+
+.clickable {
+  cursor : pointer;
+}
