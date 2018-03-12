@@ -13,7 +13,7 @@
         <div class="col-xs-12">
             <div class="text-center">
                 <p>
-                    <span class="text-warning" th:text=" ${errorMessage}">エラーが発生しました。</span><br/>
+                    <span class="text-warning" th:text="${errorMessage} + '[' + ${errorCode} + ']'">エラーが発生しました。</span><br/>
                 </p>
             </div>
         </div>
