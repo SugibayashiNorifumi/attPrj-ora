@@ -62,6 +62,54 @@ function findUser(targetOrgCd) {
           });
 }
 
+function handleRegisterOrg() {
+   confirmBeforeSubmit("org-register-form", "登録しますか？", registerOrg);
+}
+
+function registerOrg() {
+   var formId = "org-register-form";
+
+   loading(formId);
+
+   $form = $("#" + formId);
+
+   $.ajax( {
+          url: '/admin/orgs',
+          method: 'POST',
+          data: $form.serialize()
+          }).done(function(res) {
+              removeLoading(formId);
+              alert("登録しました");
+          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+              removeLoading(formId);
+              alert("登録に失敗しました");
+          });
+}
+
+function handleRegisterUser() {
+   confirmBeforeSubmit("user-register-form", "登録しますか？", registerUser);
+}
+
+function registerUser() {
+   var formId = "user-register-form";
+
+   loading(formId);
+
+   $form = $("#" + formId);
+
+   $.ajax( {
+          url: '/admin/users',
+          method: 'POST',
+          data: $form.serialize()
+          }).done(function(res) {
+              removeLoading(formId);
+              alert("登録しました");
+          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+              removeLoading(formId);
+              alert("登録に失敗しました");
+          });
+}
+
 $(function() {
 
     findOrg();
@@ -69,4 +117,31 @@ $(function() {
     $('#org-list > tr').click(function() {
         findUser($(this).data("org-cd"));
     });
+
+    $('.modal').on('hidden.bs.modal', function(event) {
+        $(event.target).find('form')[0].reset();
+        $(event.target).find('select').val('').trigger('change');
+    });
+
+    $('.select-org').select2({
+        ajax: {
+            url: '/admin/orgs/select2',
+            dataType: "json"
+        }
+    });
+
+    $('.select-user').select2({
+        ajax: {
+            url: '/admin/users/select2',
+            dataType: "json"
+        }
+    });
+
+    $('.select-auth').select2({
+        ajax: {
+            url: '/admin/auths/select2',
+            dataType: "json"
+        }
+    });
+
 });

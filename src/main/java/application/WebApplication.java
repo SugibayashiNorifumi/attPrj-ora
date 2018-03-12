@@ -13,6 +13,7 @@ public class WebApplication {
 
     /**
      * Webアプリケーションのエントリポイント
+     *
      * @param args
      * @throws Exception
      */

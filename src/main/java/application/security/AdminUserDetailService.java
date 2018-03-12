@@ -22,13 +22,11 @@ public class AdminUserDetailService implements UserDetailsService {
 
         try {
             userId = new Integer(username);
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             throw new UsernameNotFoundException("user not found");
         }
 
-        MUser mUser = mUserDao.selectByPk(userId).orElseThrow(
-                () -> new UsernameNotFoundException("user not found")
-        );
+        MUser mUser = mUserDao.selectByPk(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
         return new AdminUser(mUser);
     }

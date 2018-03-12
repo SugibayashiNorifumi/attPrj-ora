@@ -27,6 +27,4 @@ public final class IdToken {
                 + nonce + ", name=" + name + ", picture=" + picture + "]";
     };
 
-
 }
-

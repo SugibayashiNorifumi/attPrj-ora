@@ -1,13 +1,23 @@
-insert m_user (
+INSERT INTO m_user (
    user_id
-  ,password,
+  ,password
+  ,name
   ,mail
-  ,registDate
-  ,updateDate
-) values (
+  ,auth_cd
+  ,org_cd
+  ,manager_id
+  ,regist_date
+  ,regist_user_id
+  ,regist_func_cd
+) VALUES (
   :userId
  ,:password
+ ,:name
  ,:mail
+ ,:authCd
+ ,:orgCd
+ ,:managerId
  ,:registDate
- ,:updateDate
+ ,:registUserId
+ ,:registFuncCd
 )

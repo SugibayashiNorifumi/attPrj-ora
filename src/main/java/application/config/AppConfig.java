@@ -13,26 +13,58 @@ import ninja.cero.sqltemplate.core.parameter.ParamBuilder;
 import ninja.cero.sqltemplate.core.template.TemplateEngine;
 
 /**
- * アプリケーション設定クラス
+ * <pre>
+ * アプリケーション設定クラス.
+ * </pre>
+ *
  * @author 作成者氏名
  *
  */
 @Configuration
 public class AppConfig {
 
-	@Bean
-	public SqlTemplate sqlTemplate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-		return new SqlTemplate(jdbcTemplate, namedParameterJdbcTemplate, TemplateEngine.FREEMARKER, new ParamBuilder(), new MapperBuilder());
-	}
+    /**
+     * <pre>
+     * Spring BootでSqlTemplateを使うための設定.
+     * </pre>
+     *
+     * @param jdbcTemplate
+     * @param namedParameterJdbcTemplate
+     * @return SqlTemplate
+     */
+    @Bean
+    public SqlTemplate sqlTemplate(final JdbcTemplate jdbcTemplate,
+            final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new SqlTemplate(
+                jdbcTemplate,
+                namedParameterJdbcTemplate,
+                TemplateEngine.FREEMARKER,
+                new ParamBuilder(),
+                new MapperBuilder());
+    }
 
-	@Bean
-	public Java8TimeDialect java8TimeDialect() {
-		return new Java8TimeDialect();
-	}
+    /**
+     * <pre>
+     * Spring BootでJava8 から追加された日時APIを使用するための設定.
+     * </pre>
+     *
+     * @return Java8TimeDialect
+     */
+    @Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
+    }
 
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
+    /**
+     * <pre>
+     * Spring BootでModelMapperを使うための設定.
+     * </pre>
+     *
+     * @return ModelMapper
+     */
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
 }

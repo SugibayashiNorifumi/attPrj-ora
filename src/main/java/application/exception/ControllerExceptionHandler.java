@@ -2,8 +2,6 @@ package application.exception;
 
 import java.text.MessageFormat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,15 +9,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import application.controller.WebController;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 画面コントローラ共通例外処理クラス
  *
  */
+@Slf4j
 @ControllerAdvice(basePackageClasses = WebController.class)
 public class ControllerExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
     @ExceptionHandler(ApplicationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -41,9 +39,10 @@ public class ControllerExceptionHandler {
             message = error.getMessage();
         }
 
-        logger.error(message, ex);
+        log.error(message, ex);
 
-        return new ModelAndView("error/error")
-            .addObject("errorMessage", message);
+        return new ModelAndView("error/app-error")
+                .addObject("errorCode", error.getErrorCode())
+                .addObject("errorMessage", message);
     }
 }

@@ -34,8 +34,10 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
     /**
      * REST APIエラー処理
      *
-     * @param request リクエスト
-     * @param ex      例外
+     * @param request
+     *            リクエスト
+     * @param ex
+     *            例外
      * @return レスポンス
      */
     @ExceptionHandler(value = APIException.class)
@@ -47,8 +49,10 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
     /**
      * 実行時エラー処理
      *
-     * @param request リクエスト
-     * @param ex      例外
+     * @param request
+     *            リクエスト
+     * @param ex
+     *            例外
      * @return レスポンス
      */
     @ExceptionHandler(value = RuntimeException.class)
@@ -58,8 +62,8 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
-                                                             HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
         final Map<String, String> errorDetail = new HashMap<>();
         errorDetail.put("code", APIErrors.UNEXPECTED.getErrorCode());
         errorDetail.put("message", ex.getMessage());
@@ -70,10 +74,8 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-        final String message = ex.getBindingResult().getAllErrors()
-                .stream()
-                .map(ObjectError::getDefaultMessage)
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        final String message = ex.getBindingResult().getAllErrors().stream().map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(" / "));
 
         final Map<String, String> errorDetail = new HashMap<>();
@@ -84,12 +86,13 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
         return new ResponseEntity<>(restError, status);
     }
 
-
     /**
      * 共通エラー処理
      *
-     * @param error エラー内容
-     * @param ex    例外
+     * @param error
+     *            エラー内容
+     * @param ex
+     *            例外
      * @return レスポンス
      */
     private ResponseEntity<RestError> handleError(HttpErrors error, Exception ex) {
@@ -110,6 +113,7 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
             this.error = error;
         }
 
+        @SuppressWarnings("unused")
         public Map<String, String> getError() {
             return error;
         }

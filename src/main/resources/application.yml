@@ -1,4 +1,3 @@
-
 server:
     port: 9000
 management:
@@ -14,6 +13,8 @@ spring:
         username: postgres
         password: admin
         driverClassName: org.postgresql.Driver
+#        url: jdbc:oracle:thin:ATT_USER/att_user@//192.168.56.101:1521/ORCL
+#        driverClassName: oracle.jdbc.driver.OracleDriver
     messages:
         encoding: UTF-8
     thymeleaf:
@@ -30,7 +31,6 @@ security:
         password: ziNYWtS58L8A
     basic:
         enabled: false
-        
 line:
     bot:
         channelToken: PANfDZSDDHZ3hewB4OjV0VwzMlyBRWZfn1dM/7CpOdXi4nF9OaYSe/5WYp9IgN4Re/jzROCi6zhST1NMDqlHDPwJMNnS7NaLvD/CWFGdhGe8VvT56CEZNXBhnLuL9QqfcUVxU+nQU0XHaZTvqpakswdB04t89/1O/w1cDnyilFU=
@@ -38,4 +38,4 @@ line:
     linelogin:
         channelId: 1561281540
         channelSecret: b4a6b6d9da1bfeac94206a4a1a81c29b
-        callbackUrl: https://8ce04262.ngrok.io/user/auth
+        callbackUrl: https://e08975e7.ngrok.io/user/auth

@@ -10,6 +10,9 @@ import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
  * 設定マスタDAO
+ *
+ * @author 作成者氏名
+ *
  */
 @Component
 public class MSettingDao {
@@ -29,7 +32,8 @@ public class MSettingDao {
     /**
      * 設定マスタ情報を追加する
      *
-     * @param entity 設定マスタエンティティ
+     * @param entity
+     *            設定マスタエンティティ
      * @return 更新件数
      */
     public int insert(MSetting entity) {
@@ -39,7 +43,8 @@ public class MSettingDao {
     /**
      * 設定マスタ情報を更新する
      *
-     * @param entity 設定マスタエンティティ
+     * @param entity
+     *            設定マスタエンティティ
      * @return 更新件数
      */
     public int update(MSetting entity) {

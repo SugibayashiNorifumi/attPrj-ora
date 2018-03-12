@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdminAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         super.additionalAuthenticationChecks(userDetails, authentication);
     }
 

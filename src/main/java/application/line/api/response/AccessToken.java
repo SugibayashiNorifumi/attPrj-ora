@@ -11,7 +11,8 @@ public final class AccessToken implements Serializable {
     public final String refresh_token;
     public final String id_token;
 
-    public AccessToken(String scope, String access_token, String token_type, Integer expires_in, String refresh_token, String id_token) {
+    public AccessToken(String scope, String access_token, String token_type, Integer expires_in, String refresh_token,
+            String id_token) {
         this.scope = scope;
         this.access_token = access_token;
         this.token_type = token_type;

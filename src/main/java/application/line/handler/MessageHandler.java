@@ -15,7 +15,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import retrofit2.http.GET;
 
 @LineMessageHandler
-public class MessageHandler  {
+public class MessageHandler {
 
     @Value("${line.bot.channelToken}")
     private String channelToken;
@@ -27,15 +27,16 @@ public class MessageHandler  {
     private static final String MENU_REWRITING = "Rewriting";
     private static final String MENU_LISTOUTPUT = "ListOutput";
 
-	/**
-	 * テキストのLINEメッセージを受け取るイベントハンドラ
-	 * @param event
-	 * @return
-	 */
+    /**
+     * テキストのLINEメッセージを受け取るイベントハンドラ
+     *
+     * @param event
+     * @return
+     */
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
 
-        //ReplyMessage ret = null;
+        // ReplyMessage ret = null;
 
         System.out.println("event: " + event);
 
@@ -43,16 +44,13 @@ public class MessageHandler  {
         TextMessageContent userMessage = event.getMessage();
 
         String temp = "";
-        if ( userMessage.getText().equals(MENU_ARRIVAL) ) {
+        if (userMessage.getText().equals(MENU_ARRIVAL)) {
             temp = "【出勤】ですね。";
-        }
-        else if ( userMessage.getText().equals(MENU_CLOCKOUT) ) {
+        } else if (userMessage.getText().equals(MENU_CLOCKOUT)) {
             temp = "【退勤】ですね。";
-        }
-        else if ( userMessage.getText().equals(MENU_REWRITING) ) {
+        } else if (userMessage.getText().equals(MENU_REWRITING)) {
             temp = "【修正】ですね。";
-        }
-        else if ( userMessage.getText().equals(MENU_LISTOUTPUT) ) {
+        } else if (userMessage.getText().equals(MENU_LISTOUTPUT)) {
             temp = "【リスト】ですね。";
         }
 
@@ -60,14 +58,12 @@ public class MessageHandler  {
         UserProfileResponse userProfile = getUserProfile(event.getSource().getUserId());
 
         // BOTからの返信メッセージ
-        String botResponseText = userProfile.getDisplayName() + "さん、"
-                + "ユーザIDは [" + userProfile.getUserId() + "] です。"
-                + "「" + userMessage.getText() + "」って言いましたね。。。"
-                + temp;
+        String botResponseText = userProfile.getDisplayName() + "さん、" + "ユーザIDは [" + userProfile.getUserId() + "] です。"
+                + "「" + userMessage.getText() + "」って言いましたね。。。" + temp;
 
         TextMessage textMessage = new TextMessage(botResponseText);
 
-        //ret = ReplyMessage(event.getReplyToken(), textMessage.getText());
+        // ret = ReplyMessage(event.getReplyToken(), textMessage.getText());
 
         return textMessage;
     }
@@ -76,20 +72,15 @@ public class MessageHandler  {
     public UserProfileResponse getUserProfile(String userId) {
         UserProfileResponse ret = null;
 
-        final LineMessagingClient client = LineMessagingClient
-                .builder(channelToken)
-                .build();
+        final LineMessagingClient client = LineMessagingClient.builder(channelToken).build();
 
         final UserProfileResponse userProfileResponse;
 
         try {
             userProfileResponse = client.getProfile(userId).get();
 
-            ret = new UserProfileResponse(
-                 userProfileResponse.getDisplayName(),
-                 userProfileResponse.getUserId(),
-                 userProfileResponse.getPictureUrl(),
-                 userProfileResponse.getPictureUrl());
+            ret = new UserProfileResponse(userProfileResponse.getDisplayName(), userProfileResponse.getUserId(),
+                    userProfileResponse.getPictureUrl(), userProfileResponse.getPictureUrl());
 
         } catch (InterruptedException e) {
             // TODO 自動生成された catch ブロック

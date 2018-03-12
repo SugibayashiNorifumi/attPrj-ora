@@ -8,14 +8,24 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
+ * <pre>
  * WEBアプリケーション設定クラス
+ * </pre>
+ *
  * @author 作成者氏名
  *
  */
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    @Bean(name="validator")
+    /**
+     * <pre>
+     * バリデータの設定.
+     * </pre>
+     *
+     * @return LocalValidatorFactoryBean
+     */
+    @Bean(name = "validator")
     public LocalValidatorFactoryBean localValidatorFactoryBean() {
         LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
         localValidatorFactoryBean.setValidationMessageSource(messageSource());
@@ -23,12 +33,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
-     * メッセージをUTF-8で管理する。
-     * @return
+     * <pre>メッセージをUTF-8で管理する設定.</pre>
+     *
+     * @return MessageSource
      */
     @Bean(name = "messageSource")
-    public MessageSource messageSource()
-    {
+    public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
         bean.setBasename("classpath:Messages_jp");
         bean.setDefaultEncoding("UTF-8");

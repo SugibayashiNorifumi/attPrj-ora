@@ -8,5 +8,7 @@ LEFT JOIN m_div_details dd
        ON u.auth_cd = dd.div_cd
       AND dd.div_id = 1
     WHERE u.del_flg = '0'
-      AND u.org_cd = ?
+    <#if orgCd??>
+      AND u.org_cd = :orgCd
+    </#if>
  ORDER BY u.user_id

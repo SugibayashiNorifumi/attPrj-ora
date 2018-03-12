@@ -1,7 +1,10 @@
 package application.emuns;
 
 /**
- * 権限区分
+ * 権限コード
+ *
+ * @author 作成者氏名
+ *
  */
 public enum AuthCd {
     MEMBER("01"), // 一般

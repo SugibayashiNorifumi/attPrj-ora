@@ -27,9 +27,9 @@ public class SettingForm {
     public String alertFlag;
 
     public void setStartTime(String value) {
-        if(!StringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             String[] startTime = value.split(":");
-            if(startTime.length == 2) {
+            if (startTime.length == 2) {
                 openTime = startTime[0];
                 openMinutes = startTime[1];
             }
@@ -37,9 +37,9 @@ public class SettingForm {
     }
 
     public void setEndTime(String value) {
-        if(!StringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             String[] endTime = value.split(":");
-            if(endTime.length == 2) {
+            if (endTime.length == 2) {
                 closeTime = endTime[0];
                 closeMinutes = endTime[1];
             }
@@ -47,9 +47,9 @@ public class SettingForm {
     }
 
     public void setAlertEndTime(String value) {
-        if(!StringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             String[] alertEndTime = value.split(":");
-            if(alertEndTime.length == 2) {
+            if (alertEndTime.length == 2) {
                 alertCloseTime = alertEndTime[0];
                 alertCloseMinutes = alertEndTime[1];
             }

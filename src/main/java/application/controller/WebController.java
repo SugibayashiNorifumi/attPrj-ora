@@ -27,7 +27,10 @@ import application.service.UserService;
 import application.utils.CommonUtils;
 
 /**
- * <p>user web application pages</p>
+ * 一般ユーザ向け機能用 画面コントローラ.
+ *
+ * @author 作成者氏名
+ *
  */
 @Controller
 @RequestMapping(value = "/user")
@@ -35,7 +38,7 @@ public class WebController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebController.class);
 
-	private static final String USER_MAIL = "userEmail";
+    private static final String USER_MAIL = "userEmail";
     private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final String NONCE = "nonce";
@@ -49,29 +52,20 @@ public class WebController {
     @Autowired
     private HttpSession httpSession;
 
-    /**
-     * <p>LINE Login Button Page
-     * <p>Login Type is to log in on any desktop or mobile website
-     */
-    @RequestMapping(value = "/login", method=RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(LoginForm loginForm) {
         return "user/login";
     }
 
-    /**
-     * <p>Redirect to LINE Login Page</p>
-     */
-    @RequestMapping(value = "/linelogin", method=RequestMethod.POST)
-    public String goToAuthPage(
-            @ModelAttribute(value = "loginForm") @Valid LoginForm loginForm,
-            BindingResult result,
+    @RequestMapping(value = "/linelogin", method = RequestMethod.POST)
+    public String goToAuthPage(@ModelAttribute(value = "loginForm") @Valid LoginForm loginForm, BindingResult result,
             Model model) {
 
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return "user/login";
         }
 
-        if(!userService.getUserByMail(loginForm.mail).isPresent()) {
+        if (!userService.getUserByMail(loginForm.mail).isPresent()) {
             model.addAttribute("errorMessage", "メールアドレスが存在しません");
             return "user/login";
         }
@@ -84,19 +78,15 @@ public class WebController {
         httpSession.setAttribute(NONCE, nonce);
         httpSession.setAttribute(USER_MAIL, loginForm.mail);
 
-        logger.info("【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
+        logger.info(
+                "【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
 
         final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
 
-    /**
-     * <p>Redirect Page from LINE Platform</p>
-     * <p>Login Type is to log in on any desktop or mobile website
-     */
-    @RequestMapping(value = "/auth", method=RequestMethod.GET)
-    public String auth(
-            @RequestParam(value = "code", required = false) String code,
+    @RequestMapping(value = "/auth", method = RequestMethod.GET)
+    public String auth(@RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "state", required = false) String state,
             @RequestParam(value = "scope", required = false) String scope,
             @RequestParam(value = "error", required = false) String error,
@@ -112,14 +102,15 @@ public class WebController {
             logger.debug("parameter errorMessage : " + errorMessage);
         }
 
-        if (error != null || errorCode != null || errorMessage != null){
+        if (error != null || errorCode != null || errorMessage != null) {
             return "redirect:/user/loginCancel";
         }
 
-        logger.info("【state 】:" + state);
-        logger.info("【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
+        logger.debug("【state 】:" + state);
+        logger.debug(
+                "【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
 
-        if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
+        if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))) {
             return "redirect:/user/sessionError";
         }
 
@@ -127,13 +118,13 @@ public class WebController {
 
         logger.debug("mail address :" + mail);
 
-        if(StringUtils.isEmpty(mail)) {
+        if (StringUtils.isEmpty(mail)) {
             return "redirect:/user/loginError";
         }
 
         Optional<MUser> userOpt = userService.getUserByMail(mail);
 
-        if(!userOpt.isPresent()) {
+        if (!userOpt.isPresent()) {
             return "redirect:/user/loginError";
         }
 
@@ -163,19 +154,12 @@ public class WebController {
         return "redirect:/user/success";
     }
 
-    /**
-    * <p>login success Page
-    */
     @RequestMapping("/success")
     public String success(Model model) {
-
-        AccessToken token = (AccessToken)httpSession.getAttribute(ACCESS_TOKEN);
-        if (token == null){
-            return "redirect:/";
-        }
-
-        if (!lineAPIService.verifyIdToken(token.id_token, (String) httpSession.getAttribute(NONCE))) {
-            // verify failed
+        logger.debug("【success start】:");
+        AccessToken token = (AccessToken) httpSession.getAttribute(ACCESS_TOKEN);
+        if (token == null) {
+            logger.debug("【success A】:");
             return "redirect:/";
         }
 
@@ -187,20 +171,15 @@ public class WebController {
             logger.debug("pictureUrl : " + idToken.picture);
         }
         model.addAttribute("idToken", idToken);
+        logger.debug("【success C】:");
         return "user/add_friend";
     }
 
-    /**
-    * <p>login Cancel Page
-    */
     @RequestMapping("/loginCancel")
     public String loginCancel() {
         return "user/login_cancel";
     }
 
-    /**
-    * <p>Session Error Page
-    */
     @RequestMapping("/sessionError")
     public String sessionError() {
         return "user/session_error";

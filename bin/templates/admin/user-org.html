@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="utf-8"/>
+    <!-- Select2 -->
+    <link rel="stylesheet" th:href="@{/lib/admin-lte/bower_components/select2/dist/css/select2.min.css}"
+          href="../../static/lib/admin-lte/bower_components/select2/dist/css/bootstrap.min.css" />
 </head>
 <body>
 <div class="ui container" layout:fragment="content" th:remove="tag">
@@ -25,7 +28,7 @@
                     </div><!-- /.box-header -->
                     <div class="box-tools">
                         <div class="pull-left">
-                            <a class="btn btn-info" href="#">
+                            <a class="btn btn-info" href="#" data-toggle="modal" data-target="#modal-org-form">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
@@ -54,10 +57,10 @@
                     </div><!-- /.box-header -->
                     <div class="box-tools">
                         <div class="pull-left">
-                            <a class="btn btn-warning" href="#">
+                            <a class="btn btn-danger" href="#">
                                 <i class="fa fa-trash"></i>
                             </a>
-                            <a class="btn btn-info" href="#">
+                            <a class="btn btn-info" href="#" data-toggle="modal" data-target="#modal-user-form">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
@@ -66,12 +69,13 @@
                         <table class="table table-hover table-bordered">
                             <thead>
                             <tr>
-                                <td></td>
+                                <td><input type="checkbox" /></td>
                                 <td>ユーザID</td>
                                 <td>権限</td>
                                 <td>組織</td>
-                                <td>ユーザ名</td>
+                                <td>名前</td>
                                 <td>メール</td>
+                                <td>修正</td>
                             </tr>
                             </thead>
                             <tbody id="user-list" >
@@ -83,11 +87,149 @@
             </div>
         </div>
     </section>
+    <!-- 組織登録・更新画面 -->
+    <div class="modal fade" id="modal-org-form">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="box">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">組織登録</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="org-register-form" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="org-cd" class="col-md-3 control-label">組織コード</label>
+                                <div class="col-md-9 row">
+                                    <div class="col-md-4">
+                                        <input id="org-cd" type="text" class="form-control"  placeholder="組織コード" name="orgCd" maxlength="2" required="required" />
+                                    </div>
+                                    <div class="col-md-8"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="org-name" class="col-md-3 control-label">組織名</label>
+                                <div class="col-md-9">
+                                    <input id="org-name" type="text" class="form-control"  placeholder="組織名" name="orgName" maxlength="20" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="location" class="col-md-3 control-label">拠点</label>
+                                <div class="col-md-9">
+                                    <input id="location" type="text" class="form-control"  placeholder="拠点" name="location" maxlength="20" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="disp-seq" class="col-md-3 control-label">表示順</label>
+                                <div class="col-md-9">
+                                    <input id="disp-seq" type="number" class="form-control"  placeholder="表示順" name="dispSeq"
+                                           maxlength="20"
+                                           required="required"
+                                           step="1"
+                                           min="1"
+                                           max="99"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-info"
+                                    onclick="handleRegisterOrg();">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ユーザ登録・更新画面 -->
+    <div class="modal fade" id="modal-user-form">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="box">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">ユーザ登録</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="user-register-form" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="user-id" class="col-md-3 control-label">ユーザID</label>
+                                <div class="col-md-9 row">
+                                    <div class="col-md-4">
+                                        <input id="user-id" type="text" class="form-control"  maxlength="6" placeholder="ユーザID" name="userId" required="required" />
+                                    </div>
+                                    <div class="col-md-8"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-md-3 control-label">パスワード</label>
+                                <div class="col-md-9">
+                                    <input id="password" type="password" class="form-control"  placeholder="パスワード" name="password" maxlength="64" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="col-md-3 control-label">名前</label>
+                                <div class="col-md-9">
+                                    <input id="name" type="text" class="form-control"  placeholder="名前" name="name" maxlength="40" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="mail" class="col-md-3 control-label">メールアドレス</label>
+                                <div class="col-md-9">
+                                    <input id="mail" type="email" class="form-control"  placeholder="メールアドレス" name="mail" maxlength="256" required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-org-cd" class="col-md-3 control-label">組織</label>
+                                <div class="col-md-9">
+                                    <select id="user-org-cd" name="orgCd" class="select-org form-control" required="required" style="width:50%"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="manager-id" class="col-md-3 control-label">上司</label>
+                                <div class="col-md-9">
+                                    <select id="manager-id" name="managerId" class="select-user form-control" required="required" style="width:50%"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="auth-cd" class="col-md-3 control-label">権限</label>
+                                <div class="col-md-9">
+                                    <select id="auth-cd" name="authCd" class="select-auth form-control" style="width:30%"></select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="pull-right">
+                            <span id="user-reg-msg"></span>
+                            <button type="button" class="btn btn-info"
+                                    onclick="handleRegisterUser();">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- /.content -->
 </div>
 <div layout:fragment="script" th:remove="tag">
-    <script th:src="@{/js/lib/jsrender.min.js}"
-            src="../../static/js/lib/jsrender.min.js"></script>
+    <!-- Select2 -->
+    <script src="../../static/lib/admin-lte/bower_components/select2/dist/js/select2.min.js"
+            th:src="@{/lib/admin-lte/bower_components/select2/dist/js/select2.min.js}"></script>
+    <!-- JsRender -->
+    <script th:src="@{/lib/jsrender/jsrender.min.js}"
+            src="../../static/lib/jsrender/jsrender.min.js"></script>
     <script th:src="@{/js/admin/user-org.js}"
             src="../../static/js/admin/user-org.js"></script>
 
@@ -108,7 +250,7 @@
     <script id="user-record-tmpl" type="text/x-jsrender">
         <tr>
             <td class="vert-align col-md-1">
-                <input type="checkbox" class="form-control" value="{{:userId}}"/>
+                <input type="checkbox" value="{{:userId}}"/>
             </td>
             <td class="vert-align col-md-2">
                 {{:userId}}
@@ -125,8 +267,14 @@
             <td class="vert-align col-md-2">
                 {{:mail}}
             </td>
+            <td class="vert-align col-md-1">
+                <a class="btn btn-xs btn-info" data-user-id="{{:userId}}" href="#">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </td>
         </tr>
     </script>
 </div>
+
 </body>
 </html>
