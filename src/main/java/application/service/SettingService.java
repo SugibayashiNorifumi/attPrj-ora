@@ -1,6 +1,5 @@
 package application.service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,25 +40,14 @@ public class SettingService {
      */
     public void registerSetting(MSetting setting) {
 
-        setting.businessFlagMon = StringUtils.isEmpty(setting.businessFlagMon) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagTue = StringUtils.isEmpty(setting.businessFlagTue) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagWed = StringUtils.isEmpty(setting.businessFlagWed) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagThu = StringUtils.isEmpty(setting.businessFlagThu) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagFri = StringUtils.isEmpty(setting.businessFlagFri) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagSat = StringUtils.isEmpty(setting.businessFlagSat) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
-        setting.businessFlagSun = StringUtils.isEmpty(setting.businessFlagSun) ? DelFlag.OFF.getVal()
-                : DelFlag.ON.getVal();
+        setting.businessFlagMon = StringUtils.isEmpty(setting.businessFlagMon) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagTue = StringUtils.isEmpty(setting.businessFlagTue) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagWed = StringUtils.isEmpty(setting.businessFlagWed) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagThu = StringUtils.isEmpty(setting.businessFlagThu) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagFri = StringUtils.isEmpty(setting.businessFlagFri) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagSat = StringUtils.isEmpty(setting.businessFlagSat) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
+        setting.businessFlagSun = StringUtils.isEmpty(setting.businessFlagSun) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
         setting.alertFlag = StringUtils.isEmpty(setting.alertFlag) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-
-        setting.updateUserId = 0;
-        setting.updateFuncCd = "0";
-        setting.updateDate = LocalDateTime.now();
 
         mSettingDao.update(setting);
     }

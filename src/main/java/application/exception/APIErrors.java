@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
  */
 public enum APIErrors implements HttpErrors {
 
-    INVALID_PARAMETER("ERR-998", HttpStatus.BAD_REQUEST, "パラメータが正しくありません。"), UNEXPECTED("ERR-999",
-            HttpStatus.INTERNAL_SERVER_ERROR, "予期せぬエラーが発生しました。：{0}");
+    INVALID_PARAMETER("ERR-998", HttpStatus.BAD_REQUEST, "パラメータが正しくありません。"),
+    UNEXPECTED("ERR-999", HttpStatus.INTERNAL_SERVER_ERROR, "予期せぬエラーが発生しました。：{0}");
 
     private String code;
 

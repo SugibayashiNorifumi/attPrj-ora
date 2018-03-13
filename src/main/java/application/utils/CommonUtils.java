@@ -12,8 +12,7 @@ public final class CommonUtils {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private CommonUtils() {
-    };
+    private CommonUtils() { };
 
     public static String getToken() {
         byte[] bytes = new byte[32];

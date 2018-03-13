@@ -24,11 +24,11 @@ public class OrgService {
 
     /**
      * 組織を検索する
-     *
-     * @return 組織情報リスト
+     * @param name 名前
+     * @return 組織情報リスト*
      */
-    public List<MOrg> findOrgs() {
-        return mOrgDao.findOrgs();
+    public List<MOrg> findOrgs(String name) {
+        return mOrgDao.findOrgs(name);
     }
 
     public void registerOrg(MOrg org) {

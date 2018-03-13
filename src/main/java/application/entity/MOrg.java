@@ -1,11 +1,16 @@
 package application.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * 組織マスタエンティティ
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class MOrg extends AbstractEntity {
 
-    /** 組織コード */
+	/** 組織コード */
     public String orgCd;
 
     /** 組織名 */

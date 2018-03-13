@@ -20,10 +20,12 @@ public class SqlUtil {
      * @return エスケープ後の文字列
      */
     public static String escape(String str, String escapeStr) {
-        if (StringUtils.isEmpty(str)) {
+        if(StringUtils.isEmpty(str)) {
             return null;
         }
-        return str.replace(escapeStr, escapeStr + escapeStr).replace("%", escapeStr + "%").replace("_", escapeStr + "_")
-                .replace("'", "''");
+        return str.replace(escapeStr, escapeStr + escapeStr)
+            .replace("%", escapeStr + "%")
+            .replace("_", escapeStr + "_")
+            .replace("'", "''");
     }
 }

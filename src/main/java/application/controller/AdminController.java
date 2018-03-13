@@ -1,5 +1,6 @@
 package application.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +11,14 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,7 +83,8 @@ public class AdminController {
      * @return String
      */
     @RequestMapping(value = "/user-org")
-    public String getUserOrg() {
+    public String getUserOrg(Model model) {
+        model.addAttribute("authList", divisionService.getAuthList());
         return "admin/user-org";
     }
 
@@ -89,11 +94,13 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/find-orgs", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> findOrgs() {
+    public
+    @ResponseBody
+    Map<String, Object> findOrgs() {
 
         Map<String, Object> res = new HashMap<>();
 
-        res.put("results", orgService.findOrgs());
+        res.put("results", orgService.findOrgs(null));
 
         return res;
     }
@@ -104,11 +111,13 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/find-users", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
+    public
+    @ResponseBody
+    Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
 
         Map<String, Object> res = new HashMap<>();
 
-        res.put("results", userService.findUsers(orgCd));
+        res.put("results", userService.findUsers(orgCd, null));
 
         return res;
     }
@@ -122,7 +131,8 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
-    public String setting(@ModelAttribute SettingForm settingForm, Model model) {
+    public String setting(@ModelAttribute SettingForm settingForm,
+                          Model model) {
 
         MSetting mSetting = settingService.getSetting().orElse(new MSetting());
 
@@ -144,9 +154,11 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/setting", method = RequestMethod.POST)
-    public String saveSetting(@ModelAttribute @Valid SettingForm settingForm, BindingResult bindingResult, Model model,
-            RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+    public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
+                              BindingResult bindingResult,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
             return "admin/setting";
         }
 
@@ -174,9 +186,15 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public @ResponseBody Map<String, Object> registerUser(UserForm userForm){
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
+                                                            BindingResult bindingResult){
 
         log.debug("requested user form: {}", userForm);
+
+        if(bindingResult.hasErrors()) {
+            return genValidationErrorResponse(bindingResult);
+        }
 
         MUser mUser = modelMapper.map(userForm, MUser.class);
 
@@ -184,7 +202,9 @@ public class AdminController {
 
         Map<String, Object> res = new HashMap<>();
 
-        return res;
+        res.put("status", "OK");
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /**
@@ -192,11 +212,13 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/orgs/select2", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> getOrgSelect2Data() {
+    public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String name) {
+
+        log.debug("request param name: {}", name);
 
         Map<String, Object> res = new HashMap<>();
 
-        List<Map<String, Object>> data = orgService.findOrgs().stream()
+        List<Map<String, Object>> data = orgService.findOrgs(name).stream()
                 .map(org -> {
                     Map<String, Object> item = new HashMap<>();
                     item.put("id", org.orgCd);
@@ -214,10 +236,14 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/users/select2", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> getUserSelect2Data(@RequestParam(required = false) String orgCd) {
+    public @ResponseBody Map<String, Object> getUserSelect2Data(@RequestParam(required = false) String orgCd,
+                                                                @RequestParam(required = false) String name) {
+
+        log.debug("request param name: {}", name);
+
         Map<String, Object> res = new HashMap<>();
 
-        List<Map<String, Object>> data = userService.findUsers(orgCd).stream()
+        List<Map<String, Object>> data = userService.findUsers(orgCd, name).stream()
                 .map(user -> {
                     Map<String, Object> item = new HashMap<>();
                     item.put("id", user.userId);
@@ -251,6 +277,11 @@ public class AdminController {
         return res;
     }
 
+    /**
+     * エンコードされたパスワード確認
+     * @param passwords 平文パスワード
+     * @return
+     */
     @RequestMapping(value = "/encodePassword", method = RequestMethod.GET)
     public @ResponseBody Map<String, String> encodePassword(@RequestParam(name = "passwords") String passwords) {
         return Arrays.stream(passwords.split(","))
@@ -258,5 +289,21 @@ public class AdminController {
                         password -> password,
                         password -> passwordEncoder.encode(password)
                         ));
+    }
+
+    /**
+     * Validation結果のBindingResultからエラーレスポンスエンティティを生成する。
+     * @param result BindingResultインスタンス
+     * @return ResponseEntity
+     */
+    private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
+        Map<String, List> errors = result.getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)), (a, b) -> {a.add(b); return a;}));
+
+        Map<String, Object> errorRes = new HashMap<>();
+        errorRes.put("status", "NG");
+        errorRes.put("errors", errors);
+
+        return new ResponseEntity(errorRes, HttpStatus.BAD_REQUEST);
     }
 }

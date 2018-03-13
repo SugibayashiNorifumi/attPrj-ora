@@ -1,8 +1,13 @@
 package application.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * ユーザマスタエンティティ
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class MUser extends AbstractEntity {
 
     /** ユーザID */

@@ -1,5 +1,7 @@
 package application.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
  * @author 作成者氏名
  *
  */
+@Data
 public class AbstractEntity implements Serializable {
     /** 登録日時 */
     public LocalDateTime registDate;

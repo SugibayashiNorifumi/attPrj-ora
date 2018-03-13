@@ -21,63 +21,61 @@ import application.security.AdminUser;
 @Transactional
 public class UserService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    MUserDao muserDao;
+	@Autowired
+	MUserDao muserDao;
 
-    public Optional<MUser> getUserByMail(String mail) {
-        return muserDao.selectByMail(mail);
-    }
+	public Optional<MUser> getUserByMail(String mail) {
+		return muserDao.selectByMail(mail);
+	}
 
-    /**
-     *
-     * LINE IDを登録する
-     *
-     * @param userId
-     *            対象ユーザID
-     * @param lineId
-     *            LINE ID
-     */
-    public void registerLineId(Integer userId, String lineId) {
-        muserDao.selectByPk(userId).ifPresent(muser -> {
-            MUser entity = new MUser();
-            entity.userId = userId;
-            entity.lineId = lineId;
-            muserDao.update(entity);
-        });
-    }
+	/**
+	 *
+	 * LINE IDを登録する。
+	 *
+	 * @param userId 対象ユーザID
+	 * @param lineId LINE ID
+	 */
+	public void registerLineId(Integer userId, String lineId) {
+	    muserDao.selectByPk(userId).ifPresent(muser -> {
+	        MUser entity = new MUser();
+	        entity.userId = userId;
+	        entity.lineId = lineId;
+	        muserDao.update(entity);
+	    });
+	}
 
-    /**
-     * ユーザ情報を検索する.
-     *
-     * @param orgCd
-     *            所属組織コード
-     *
-     * @return ユーザ情報リスト
-     */
-    public List<UserInfo> findUsers(String orgCd) {
-        return muserDao.findUsers(orgCd);
-    }
+	/**
+	 * ユーザ情報を検索する。
+	 *
+	 * @param orgCd 所属組織コード
+	 * @param name 名前
+	 *
+	 * @return ユーザ情報リスト
+	 */
+	public List<UserInfo> findUsers(String orgCd, String name) {
+		return muserDao.findUsers(orgCd, name);
+	}
 
-    /**
-     * ユーザ情報を登録する。
-     *
-     * @param user
-     *            ユーザ情報
-     */
-    public void registerUser(MUser user) {
 
-        user.password = passwordEncoder.encode(user.password);
+	/**
+	 * ユーザ情報を登録する。
+	 *
+	 * @param user ユーザ情報
+	 */
+	public void registerUser(MUser user) {
 
-        AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        user.registDate = LocalDateTime.now();
-        user.registUserId = principal.getUser().userId;
-        user.registFuncCd = "0";
+		user.password = passwordEncoder.encode(user.password);
 
-        muserDao.insert(user);
-    }
+		AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		user.registDate = LocalDateTime.now();
+		user.registUserId = principal.getUser().userId;
+		user.registFuncCd = "0";
+
+		muserDao.insert(user);
+	}
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
  */
 public enum ApplicationErrors implements HttpErrors {
 
+    ALREADY_UPDATED("ERR-998", HttpStatus.BAD_REQUEST, "他のユーザにより既に更新されています。"),
     UNEXPECTED("ERR-999", HttpStatus.INTERNAL_SERVER_ERROR, "予期せぬエラーが発生しました。");
 
     private String code;

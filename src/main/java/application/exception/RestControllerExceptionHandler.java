@@ -62,8 +62,8 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
+                                                             HttpHeaders headers, HttpStatus status, WebRequest request) {
         final Map<String, String> errorDetail = new HashMap<>();
         errorDetail.put("code", APIErrors.UNEXPECTED.getErrorCode());
         errorDetail.put("message", ex.getMessage());
@@ -74,8 +74,10 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-        final String message = ex.getBindingResult().getAllErrors().stream().map(ObjectError::getDefaultMessage)
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+        final String message = ex.getBindingResult().getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(" / "));
 
         final Map<String, String> errorDetail = new HashMap<>();

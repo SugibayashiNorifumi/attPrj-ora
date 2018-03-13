@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import application.entity.MSetting;
+import lombok.extern.slf4j.Slf4j;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
@@ -14,8 +15,9 @@ import ninja.cero.sqltemplate.core.SqlTemplate;
  * @author 作成者氏名
  *
  */
+@Slf4j
 @Component
-public class MSettingDao {
+public class MSettingDao extends AbstractDao<MSetting> {
 
     @Autowired
     private SqlTemplate sqlTemplate;
@@ -48,6 +50,7 @@ public class MSettingDao {
      * @return 更新件数
      */
     public int update(MSetting entity) {
+        log.debug("updateDate:{}", entity.updateDate);
         return sqlTemplate.update("sql/MSettingDao/update.sql", entity);
     }
 }
