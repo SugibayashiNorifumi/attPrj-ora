@@ -38,4 +38,4 @@ line:
     linelogin:
         channelId: 1561281540
         channelSecret: b4a6b6d9da1bfeac94206a4a1a81c29b
-        callbackUrl: https://e08975e7.ngrok.io/user/auth
+        callbackUrl: https://00a28aee.ngrok.io/user/auth

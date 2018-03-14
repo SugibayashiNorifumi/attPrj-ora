@@ -1,4 +1,4 @@
-package application.line.handler;
+package application.line;
 
 import java.util.concurrent.ExecutionException;
 
@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.postback.PostbackContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import lombok.extern.slf4j.Slf4j;
 import retrofit2.http.GET;
 
+@Slf4j
 @LineMessageHandler
 public class MessageHandler {
 
@@ -68,6 +72,41 @@ public class MessageHandler {
         return textMessage;
     }
 
+    @EventMapping
+    public TextMessage handlePostBackEvent(PostbackEvent event) {
+        // ButtonsTemplateでユーザーが選択した結果が、このPostBackEventとして返ってくる
+
+        PostbackContent postbackContent = event.getPostbackContent();
+
+        // PostbackActionで設定したdataを取得する
+        String data = postbackContent.getData();
+
+        log.debug("PostbackAction data: {}", data);
+
+        final String replyText;
+
+        if ("japanese".equals(data)) {
+            replyText = "和食がお好きなんですね。";
+        } else if ("italian".equals(data)) {
+            replyText = "イタリアン、良いですよね。";
+        } else {
+            replyText = "フレンチ、私も食べたいです。";
+        }
+
+        //return new TextMessage(event.getReplyToken(), Arrays.asList(new TextMessage(replyText)));
+
+        TextMessage textMessage = new TextMessage(replyText);
+
+        return textMessage;
+    }
+
+
+
+    /**
+     * LINEユーザIDからLINEプロフィール情報を取得する.
+     * @param userId LINEユーザID
+     * @return UserProfileResponse LINEプロフィール情報
+     */
     @GET
     public UserProfileResponse getUserProfile(String userId) {
         UserProfileResponse ret = null;

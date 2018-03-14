@@ -47,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/lib/**",
                 "/user/**",
                 "/api/**",
-                "/callback");
+                "/callback",
+                "/api_test");
     }
 
     /**
