@@ -33,6 +33,10 @@ public class UserService {
 		return muserDao.selectByMail(mail);
 	}
 
+    public Optional<MUser> getUserByLineId(String lineId) {
+        return muserDao.selectByLineId(lineId);
+    }
+
 	/**
 	 *
 	 * LINE IDを登録する。

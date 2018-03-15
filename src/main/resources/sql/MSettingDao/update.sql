@@ -13,6 +13,6 @@ UPDATE m_setting
       ,business_flag_sat = :businessFlagSat
       ,business_flag_sun = :businessFlagSun
       ,alert_flag = :alertFlag
-      ,update_date = :updateDate
+      ,update_date = Now()
       ,update_user_id = :updateUserId
       ,update_func_cd = :updateFuncCd

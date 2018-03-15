@@ -7,9 +7,8 @@ package application.emuns;
  *
  */
 public enum AttenanceCd {
-    MEMBER("01"), // 一般
-    MANAGER("02"), // 上長
-    ADMIN("03"); // 管理者
+    MEMBER("01"), // 出勤
+    MANAGER("02"); // 退勤
 
     private String code;
 

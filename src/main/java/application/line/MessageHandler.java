@@ -2,7 +2,9 @@ package application.line;
 
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -14,17 +16,24 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.http.GET;
 
 @Slf4j
 @LineMessageHandler
+@Component
 public class MessageHandler {
+
+    @Autowired
+    private UserService userService;
 
     @Value("${line.bot.channelToken}")
     private String channelToken;
     @Value("${line.bot.channelSecret}")
     private String channelSecret;
+
+
 
     private static final String MENU_ARRIVAL = "Arrival";
     private static final String MENU_CLOCKOUT = "Clock-out";
@@ -60,6 +69,8 @@ public class MessageHandler {
 
         // ユーザーのProfileを取得する
         UserProfileResponse userProfile = getUserProfile(event.getSource().getUserId());
+
+        log.debug("【event.getSource().getUserId()】 {}", event.getSource().getUserId());
 
         // BOTからの返信メッセージ
         String botResponseText = userProfile.getDisplayName() + "さん、" + "ユーザIDは [" + userProfile.getUserId() + "] です。"
@@ -131,6 +142,10 @@ public class MessageHandler {
 
         return ret;
 
+    }
+
+    private boolean userExists(String lineId) {
+        return userService.getUserByMail(lineId).isPresent();
     }
 
 }
