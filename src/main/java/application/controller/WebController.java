@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.linecorp.bot.model.profile.UserProfileResponse;
+
 import application.entity.MUser;
 import application.form.LoginForm;
 import application.line.api.response.AccessToken;
@@ -25,6 +28,7 @@ import application.line.api.response.IdToken;
 import application.service.LineAPIService;
 import application.service.UserService;
 import application.utils.CommonUtils;
+import application.utils.LineUtils;
 
 /**
  * 一般ユーザ向け機能用 画面コントローラ.
@@ -42,6 +46,9 @@ public class WebController {
     private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final String NONCE = "nonce";
+
+    @Value("${line.bot.lineAtId}")
+    private String lineAtId;
 
     @Autowired
     private UserService userService;
@@ -72,14 +79,14 @@ public class WebController {
 
         logger.debug("mail address :" + loginForm.mail);
 
-        final String state = CommonUtils.getToken();
+        final String state = loginForm.mail;
         final String nonce = CommonUtils.getToken();
-        httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
-        httpSession.setAttribute(NONCE, nonce);
-        httpSession.setAttribute(USER_MAIL, loginForm.mail);
+        //        httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
+        //        httpSession.setAttribute(NONCE, nonce);
+        //        httpSession.setAttribute(USER_MAIL, loginForm.mail);
 
-        logger.info(
-                "【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
+        //        logger.info(
+        //                "【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
 
         final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
@@ -102,36 +109,30 @@ public class WebController {
             logger.debug("parameter errorMessage : " + errorMessage);
         }
 
+        // パラメータチェック
         if (error != null || errorCode != null || errorMessage != null) {
             return "redirect:/user/loginCancel";
         }
 
-        logger.debug("【state 】:" + state);
-        logger.debug(
-                "【httpSession.getAttribute(LINE_WEB_LOGIN_STATE) 】:" + httpSession.getAttribute(LINE_WEB_LOGIN_STATE));
-
-        if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))) {
-            return "redirect:/user/sessionError";
-        }
-
-        final String mail = (String) httpSession.getAttribute(USER_MAIL);
-
-        logger.debug("mail address :" + mail);
+        logger.debug("【mail=state】:" + state);
+        String mail = state;
 
         if (StringUtils.isEmpty(mail)) {
             return "redirect:/user/loginError";
         }
 
         Optional<MUser> userOpt = userService.getUserByMail(mail);
-
         if (!userOpt.isPresent()) {
             return "redirect:/user/loginError";
         }
+        Integer userId = userOpt.get().userId;
 
-        httpSession.removeAttribute(USER_MAIL);
-        httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
-
+        // LINEログイン情報取得
         AccessToken token = lineAPIService.accessToken(code);
+        UserProfileResponse profile = LineUtils.getProfileByAccessToken(token.access_token);
+        String lineId = profile.getUserId();
+        logger.debug("【userId -> lineId】:{} -> {}", userId, lineId);
+
         if (logger.isDebugEnabled()) {
             logger.debug("scope : " + token.scope);
             logger.debug("access_token : " + token.access_token);
@@ -142,14 +143,13 @@ public class WebController {
         }
 
         httpSession.setAttribute(ACCESS_TOKEN, token);
-
         logger.debug("access token: " + token);
+        //
+        //        final IdToken idToken = lineAPIService.idToken(token.id_token);
+        //
+        //        logger.debug("id token: " + idToken);
 
-        final IdToken idToken = lineAPIService.idToken(token.id_token);
-
-        logger.debug("id token: " + idToken);
-
-        userService.registerLineId(userOpt.get().userId, idToken.sub);
+        userService.registerLineId(userId, lineId);
 
         return "redirect:/user/success";
     }
@@ -171,6 +171,11 @@ public class WebController {
             logger.debug("pictureUrl : " + idToken.picture);
         }
         model.addAttribute("idToken", idToken);
+
+        //        UserProfileResponse channelProfile = LineUtils.getProfileByAccessToken(channelToken);
+        model.addAttribute("lineAtId", lineAtId);
+        //        logger.debug("pictureUrl : " + channelProfile.getPictureUrl());
+
         logger.debug("【success C】:");
         return "user/add_friend";
     }
