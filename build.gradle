@@ -34,21 +34,29 @@ configurations {
 }
 
 dependencies {
+    //Spring
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    compile group: 'org.springframework.session', name: 'spring-session-data-redis'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+
+	// LINE
     compile group: 'com.linecorp.bot', name: 'line-bot-spring-boot', version:'1.15.0'
     compile group: 'com.linecorp.bot', name: 'line-bot-servlet', version:'1.15.0'
     compile group: 'com.linecorp.bot', name: 'line-bot-model', version:'1.15.0'
     compile group: 'com.linecorp.bot', name: 'line-bot-api-client', version:'1.15.0'
     compile fileTree(dir: 'lib', include: '*.jar')
 
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-    compile group: 'org.springframework.session', name: 'spring-session-data-redis'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    // Apache
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    compile group: 'org.apache.oltu.oauth2', name: 'org.apache.oltu.oauth2.common', version: '1.0.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+
     compile group: 'ninja.cero.bootiful-sqltemplate', name: 'bootiful-sqltemplate-core', version:'1.0.3'
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version:'2.1.0.RELEASE'
     compile group: 'org.postgresql', name: 'postgresql', version:'42.2.1'
