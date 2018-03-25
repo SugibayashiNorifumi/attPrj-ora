@@ -32,9 +32,7 @@ import application.utils.LineUtils;
 
 /**
  * 一般ユーザ向け機能用 画面コントローラ.
- *
  * @author 作成者氏名
- *
  */
 @Controller
 @RequestMapping(value = "/user")
@@ -42,8 +40,8 @@ public class WebController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebController.class);
 
-    private static final String USER_MAIL = "userEmail";
-    private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
+    //    private static final String USER_MAIL = "userEmail";
+    //    private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final String NONCE = "nonce";
 

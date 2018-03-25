@@ -16,49 +16,63 @@ import application.entity.MUser;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
- * ユーザマスタDAO
- *
+ * ユーザマスタDAO。
  * @author 作成者氏名
- *
  */
 @Component
 public class MUserDao extends AbstractDao<MUser> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MUserDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(MUserDao.class);
 
-	@Autowired
-	private SqlTemplate sqlTemplate;
+    @Autowired
+    private SqlTemplate sqlTemplate;
 
-	public Optional<MUser> selectByPk(Integer userId) {
-		return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByPk.sql", MUser.class, userId));
-	}
+    public Optional<MUser> selectByPk(Integer userId) {
+        return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByPk.sql", MUser.class, userId));
+    }
 
-	public Optional<MUser> selectByMail(String mail) {
-		return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByMail.sql", MUser.class, mail));
-	}
+    public Optional<MUser> selectByMail(String mail) {
+        return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByMail.sql", MUser.class, mail));
+    }
 
-   public Optional<MUser> selectByLineId(String lineId) {
+    public Optional<MUser> selectByLineId(String lineId) {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByLineId.sql", MUser.class, lineId));
     }
 
-	public List<UserInfo> findUsers(String orgCd, String name) {
+    /**
+     * ユーザを取得する。
+     * @param lineId LINE識別子
+     * @return ユーザ
+     */
+    public MUser getByLineId(String lineId) {
+        Optional<MUser> select = selectByLineId(lineId);
+        MUser res = null;
+        if (select.isPresent()) {
+            res = select.get();
+        }
+        return res;
+    }
 
-		Map<String, Object> cond = new HashMap<>();
+    public List<UserInfo> findUsers(String orgCd, String name) {
 
-		cond.put("orgCd", orgCd);
+        Map<String, Object> cond = new HashMap<>();
 
-		if(!StringUtils.isEmpty(name)) {
-			cond.put("likeName", "%" + name + "%");
-		}
+        cond.put("orgCd", orgCd);
 
-		return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfo.class, cond);
-	}
+        if (!StringUtils.isEmpty(name)) {
+            cond.put("likeName", "%" + name + "%");
+        }
 
-	public int insert(MUser entity) {
-		return sqlTemplate.update("sql/MUserDao/insert.sql", entity);
-	}
+        return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfo.class, cond);
+    }
 
-	public int update(MUser entity) {
-		return sqlTemplate.update("sql/MUserDao/update.sql", entity);
-	}
+    public int insert(MUser entity) {
+        setInsertColumns(entity);
+        return sqlTemplate.update("sql/MUserDao/insert.sql", entity);
+    }
+
+    public int update(MUser entity) {
+        setUpdateColumns(entity);
+        return sqlTemplate.update("sql/MUserDao/update.sql", entity);
+    }
 }

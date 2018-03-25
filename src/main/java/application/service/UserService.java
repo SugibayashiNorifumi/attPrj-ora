@@ -1,13 +1,11 @@
 package application.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import application.dao.MUserDao;
 import application.dto.UserInfo;
 import application.entity.MUser;
-import application.security.AdminUser;
 
 @Service
 @Transactional
@@ -70,14 +67,8 @@ public class UserService {
      * @param user ユーザ情報
      */
     public void registerUser(MUser user) {
-
         user.password = passwordEncoder.encode(user.password);
-
-        AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        user.registDate = LocalDateTime.now();
-        user.registUserId = principal.getUser().userId;
-        user.registFuncCd = "0";
-
+        muserDao.setInsertColumns(user);
         muserDao.insert(user);
     }
 }

@@ -9,12 +9,8 @@ logging:
         org.springframework.jdbc.core.JdbcTemplate: DEBUG
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:5432/kenshu
-        username: postgres
-        password: admin
-        driverClassName: org.postgresql.Driver
-#        url: jdbc:oracle:thin:ATT_USER/att_user@//192.168.56.101:1521/ORCL
-#        driverClassName: oracle.jdbc.driver.OracleDriver
+        url: jdbc:oracle:thin:ATT_USER/att_user@//192.168.56.101:1521/ORCL
+        driverClassName: oracle.jdbc.driver.OracleDriver
     messages:
         encoding: UTF-8
     thymeleaf:
@@ -33,9 +29,10 @@ security:
         enabled: false
 line:
     bot:
-        channelToken: PANfDZSDDHZ3hewB4OjV0VwzMlyBRWZfn1dM/7CpOdXi4nF9OaYSe/5WYp9IgN4Re/jzROCi6zhST1NMDqlHDPwJMNnS7NaLvD/CWFGdhGe8VvT56CEZNXBhnLuL9QqfcUVxU+nQU0XHaZTvqpakswdB04t89/1O/w1cDnyilFU=
-        channelSecret: 0f07aa535865f13a2a7ba0e3a1367d22
+        lineAtId: '@yre3479v'
+        channelToken: 1DX/VfQGybmkLY4UFqCJIuE+7Xinf0oE0VLPxweC+amWCrceAgLovodWUb6E1wUpBJAIWgIgBJ310rIBOv9SaqslbBHj9bpoXsSc+9aF9x/adRPaZZO8v1taWhsvAUqH3ZeqWBawHJhXtvgDb3Av+QdB04t89/1O/w1cDnyilFU=
+        channelSecret: 9920a6d632ce9aea6a0a8197fe08ecd3
     linelogin:
-        channelId: 1561281540
-        channelSecret: b4a6b6d9da1bfeac94206a4a1a81c29b
-        callbackUrl: https://e08975e7.ngrok.io/user/auth
+        channelId: 1569615261
+        channelSecret: 913e8b61eb86a723524e10cc8367cdd4
+        callbackUrl: https://85eed706.ngrok.io/user/auth
