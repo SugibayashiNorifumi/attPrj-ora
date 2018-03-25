@@ -1,5 +1,6 @@
 package application.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -57,9 +58,8 @@ public class TAttendanceDao extends AbstractDao<TAttendance> {
      * @param yyyymm 出勤日(年月)
      * @return SELECT結果
      */
-    public Optional<TAttendance> selectByMonth(Integer userId, String yyyymm) {
-        return Optional.ofNullable(
-                sqlTemplate.forObject("sql/TAttendanceDao/select.sql", TAttendance.class, userId, yyyymm));
+    public List<TAttendance> selectByMonth(Integer userId, String yyyymm) {
+        return sqlTemplate.forList("sql/TAttendanceDao/select.sql", TAttendance.class, userId, yyyymm);
     }
 
     /**

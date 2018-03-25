@@ -3,12 +3,16 @@ package application.service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +27,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.LineMessagingClientBuilder;
 import com.linecorp.bot.client.LineSignatureValidator;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
+import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.CallbackRequest;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.MessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.servlet.LineBotCallbackException;
 import com.linecorp.bot.servlet.LineBotCallbackRequestParser;
@@ -241,6 +250,62 @@ public class LineAPIService {
         } catch (InterruptedException | ExecutionException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * プッシュでメッセージを送信する。
+     * @param message メッセージ
+     * @return LINEのレスポンス
+     */
+    public static BotApiResponse pushMessage(PushMessage message) {
+        try {
+            LineMessagingClient line = new LineMessagingClientBuilder(botChannelToken).build();
+            BotApiResponse res = line.pushMessage(message).get();
+            return res;
+        } catch (InterruptedException | ExecutionException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * プッシュで複数の選択肢を送信する。
+     * @param lineId 送信先のLINE識別子
+     * @param templateTitle タイトル
+     * @param buttonNames ボタン名(最大4個,1個あたり20文字まで)
+     * @return LINEレスポンス
+     */
+    public static BotApiResponse pushButtons(String lineId, String templateTitle, List<String> buttonNames) {
+        String thumbnailImageUrl = null; // null可、画像URL(https必須, jpg/png, 縦:横=1:1.51, 最大横1024px, 最大1MB)
+        String title = null; // null可、太文字部 最大40文字
+        String templateText = templateTitle; // 必須, 内容文字列, 最大60文字(title無しの場合160文字まで可)
+
+        // ボタン(アクション)定義
+        ArrayList<Action> actionList = new ArrayList<>(); // 最大4アクション
+        int btnIndex = 0;
+        for (String buttonLabel : buttonNames) {
+            if (actionList.size() >= 4) {
+                break;
+            }
+            // アクション定義
+            // ボタンタップで送信する内容
+            Map<String, Object> backMap = new HashMap<>();
+            backMap.put("id", btnIndex);
+            backMap.put("label", buttonLabel);
+            // STATE管理していない場合、backDataにキー情報をすべて含める必要がある
+            String backData = JSONUtils.buildJSON(backMap); // 必須、ポストバックデータ(最大300文字)
+            // STATE管理している場合、backTextを使うと手入力と同じフローで進められる
+            String backText = buttonLabel; // null可、LINEユーザからBOTへの送信テキスト(最大300文字)
+            actionList.add(new PostbackAction(buttonLabel, backData, backText));
+            btnIndex++;
+        }
+
+        // メッセージ成形
+        ButtonsTemplate buttonsTemplate = new ButtonsTemplate(thumbnailImageUrl, title, templateText, actionList);
+        TemplateMessage templateMsg = new TemplateMessage(templateText, buttonsTemplate);
+        PushMessage message = new PushMessage(lineId, templateMsg);
+        // 送信
+        BotApiResponse res = pushMessage(message);
+        return res;
     }
 
     private <R> R getClient(final Function<LineAPI, Call<R>> function) {

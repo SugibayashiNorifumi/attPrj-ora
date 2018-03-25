@@ -10,10 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
- * 設定マスタDAO
- *
+ * 設定マスタDAO。
  * @author 作成者氏名
- *
  */
 @Slf4j
 @Component
@@ -29,6 +27,20 @@ public class MSettingDao extends AbstractDao<MSetting> {
      */
     public Optional<MSetting> select() {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MSettingDao/select.sql", MSetting.class));
+    }
+
+    /**
+     * 設定マスタ情報を取得する。
+     *
+     * @return 設定マスタエンティティ
+     */
+    public MSetting get() {
+        Optional<MSetting> option = select();
+        MSetting res = null;
+        if (option.isPresent()) {
+            res = option.get();
+        }
+        return res;
     }
 
     /**
