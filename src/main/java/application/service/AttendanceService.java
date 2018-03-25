@@ -11,12 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 
+import application.config.AppMesssageSource;
 import application.dao.MUserDao;
 import application.dao.TAttendanceDao;
 import application.dao.TLineStatusDao;
+import application.emuns.AttenanceCd;
+import application.emuns.DelFlag;
 import application.emuns.MenuCd;
 import application.entity.MUser;
+import application.entity.TAttendance;
 import application.entity.TLineStatus;
+import application.utils.CommonUtils;
 
 /**
  * 勤怠情報操作サービス。
@@ -46,6 +51,7 @@ public class AttendanceService {
      */
     public void requestMenu(MenuCd menuCd, MessageEvent<?> evt, TextMessageContent message) {
         logger.debug("requestMenu() {}", menuCd);
+        String replyToken = evt.getReplyToken();
         String lineId = evt.getSource().getUserId();
         // ステータス設定
         TLineStatus lineStatus = getLineSutatus(lineId);
@@ -53,6 +59,23 @@ public class AttendanceService {
         lineStatus.setActionName(null);
         lineStatus.setContents(message.getText());
         setLineSutatus(lineStatus);
+
+        switch (menuCd) {
+        case ARRIVAL:
+            // 出勤
+            putArrivalNow(lineId, replyToken);
+            break;
+        case CLOCK_OUT:
+            // 退勤
+            putClockOutNow(lineId, replyToken);
+            break;
+        case REWRITING:
+            // 修正
+            break;
+        case LIST_OUTPUT:
+            // リスト
+            break;
+        }
     }
 
     /**
@@ -72,7 +95,75 @@ public class AttendanceService {
         tLineStatusDao.save(lineStatus);
 
         // メニューから操作してください
-        LineAPIService.repryMessage(replyToken, "メニューから操作してください");
+        String msg = AppMesssageSource.getMessage("line.selectMenu");
+        LineAPIService.repryMessage(replyToken, msg);
+    }
+
+    /**
+     * 出勤をマークする。
+     * @param lineId LINE識別子
+     * @param replyToken リプライTOKEN
+     */
+    public void putArrivalNow(String lineId, String replyToken) {
+        Integer userId = toUserId(lineId);
+        String attendanceDay = CommonUtils.toYyyyMmDd();
+        TAttendance entity = getTAttendance(userId, AttenanceCd.ARRIVAL.getCode(), attendanceDay);
+        if (entity.getAttendanceTime() != null) {
+            String msg = AppMesssageSource.getMessage("line.api.err.savedArrival");
+            LineAPIService.repryMessage(replyToken, msg);
+            return;
+        }
+        // 保存
+        Date attendanceTime = new Date();
+        entity.setAttendanceTime(attendanceTime);
+        tAttendancedDao.save(entity);
+
+        // 完了メッセージ
+        String msg = AppMesssageSource.getMessage("line.arrival", CommonUtils.toHMm(attendanceTime));
+        LineAPIService.repryMessage(replyToken, msg);
+    }
+
+    /**
+     * 退勤をマークする。
+     * @param lineId LINE識別子
+     * @param replyToken リプライTOKEN
+     */
+    public void putClockOutNow(String lineId, String replyToken) {
+        Integer userId = toUserId(lineId);
+        String attendanceDay = CommonUtils.toYyyyMmDd();
+        TAttendance entity = getTAttendance(userId, AttenanceCd.CLOCK_OUT.getCode(), attendanceDay);
+        if (entity.getAttendanceTime() != null) {
+            String msg = AppMesssageSource.getMessage("line.api.err.savedClockOut");
+            LineAPIService.repryMessage(replyToken, msg);
+            return;
+        }
+
+        // 保存
+        Date attendanceTime = new Date();
+        entity.setAttendanceTime(attendanceTime);
+        tAttendancedDao.save(entity);
+        // 完了メッセージ
+        String msg = AppMesssageSource.getMessage("line.clockOut", CommonUtils.toHMm(attendanceTime));
+        LineAPIService.repryMessage(replyToken, msg);
+    }
+
+    /**
+     * 勤怠情報を取得する。
+     * @param userId ユーザID
+     * @param attendancdCd 勤怠区分コード
+     * @param attendanceDay 出勤日(yyyymmdd形式)
+     * @return 勤怠情報。存在しない場合、初期値をセットした新規行
+     */
+    private TAttendance getTAttendance(Integer userId, String attendancdCd, String attendanceDay) {
+        TAttendance res = tAttendancedDao.getByPk(userId, attendancdCd, attendanceDay);
+        if (res == null) {
+            res = new TAttendance();
+            res.setUserId(userId);
+            res.setAttendanceCd(attendancdCd);
+            res.setAttendanceDay(attendanceDay);
+            res.setEditFlg(DelFlag.OFF.getVal());
+        }
+        return res;
     }
 
     /**
@@ -99,4 +190,19 @@ public class AttendanceService {
         }
         return res;
     }
+
+    /**
+     * LINE識別子をユーザIDに変換する。
+     * @param lineId LINE識別子
+     * @return ユーザID
+     */
+    private Integer toUserId(String lineId) {
+        MUser user = mUserDao.getByLineId(lineId);
+        Integer res = null;
+        if (user != null) {
+            res = user.getUserId();
+        }
+        return res;
+    }
+
 }

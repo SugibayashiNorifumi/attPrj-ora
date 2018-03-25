@@ -7,8 +7,8 @@ package application.emuns;
  *
  */
 public enum AttenanceCd {
-    MEMBER("01"), // 出勤
-    MANAGER("02"); // 退勤
+    ARRIVAL("01"), // 出勤
+    CLOCK_OUT("02"); // 退勤
 
     private String code;
 

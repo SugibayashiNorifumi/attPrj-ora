@@ -2,9 +2,14 @@ package application.entity;
 
 import java.util.Date;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * 勤怠情報エンティティ
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class TAttendance extends AbstractEntity {
     /** ユーザID */
     public Integer userId;

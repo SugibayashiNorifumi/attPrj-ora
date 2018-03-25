@@ -26,21 +26,40 @@ public class TAttendanceDao extends AbstractDao<TAttendance> {
     /**
      * PKを条件に1行取得する。
      * @param userId ユーザID
+     * @param attendanceCd 勤怠区分コード
+     * @param yyyymmdd 出勤日
      * @return 取得した1行を含むSELECT結果。
      */
-    public Optional<TAttendance> selectByPk(Integer userId) {
-        return Optional.ofNullable(
-                sqlTemplate.forObject("sql/TAttendanceDao/selectByPk.sql", TAttendance.class, userId));
+    public Optional<TAttendance> selectByPk(Integer userId, String attendanceCd, String yyyymmdd) {
+        return Optional.ofNullable(sqlTemplate.forObject(
+                "sql/TAttendanceDao/selectByPk.sql", TAttendance.class, userId, attendanceCd, yyyymmdd));
+    }
+
+    /**
+     * PKを条件に1行取得する。
+     * @param userId ユーザID
+     * @param attendanceCd 勤怠区分コード
+     * @param yyyymmdd 出勤日
+     * @return 取得した1行,見つからない場合null
+     */
+    public TAttendance getByPk(Integer userId, String attendanceCd, String yyyymmdd) {
+        Optional<TAttendance> option = selectByPk(userId, attendanceCd, yyyymmdd);
+        TAttendance res = null;
+        if (option.isPresent()) {
+            res = option.get();
+        }
+        return res;
     }
 
     /**
      * 年月を条件に複数行取得する。
      * @param userId ユーザID
+     * @param yyyymm 出勤日(年月)
      * @return SELECT結果
      */
-    public Optional<TAttendance> selectByMonth(Integer userId, String day) {
+    public Optional<TAttendance> selectByMonth(Integer userId, String yyyymm) {
         return Optional.ofNullable(
-                sqlTemplate.forObject("sql/TAttendanceDao/selectByDay.sql", TAttendance.class, userId, day));
+                sqlTemplate.forObject("sql/TAttendanceDao/select.sql", TAttendance.class, userId, yyyymm));
     }
 
     /**

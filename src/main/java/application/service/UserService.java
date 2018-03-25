@@ -68,7 +68,6 @@ public class UserService {
      */
     public void registerUser(MUser user) {
         user.password = passwordEncoder.encode(user.password);
-        muserDao.setInsertColumns(user);
         muserDao.insert(user);
     }
 }

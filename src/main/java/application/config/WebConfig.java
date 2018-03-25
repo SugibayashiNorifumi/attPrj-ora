@@ -3,7 +3,6 @@ package application.config;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -39,7 +38,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Bean(name = "messageSource")
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
+        // ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
+        AppMesssageSource bean = new AppMesssageSource();
         bean.setBasename("classpath:Messages_jp");
         bean.setDefaultEncoding("UTF-8");
         return bean;
