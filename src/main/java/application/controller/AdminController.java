@@ -26,13 +26,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+
+import application.dto.DayAttendance;
 import application.entity.MOrg;
 import application.entity.MSetting;
 import application.entity.MUser;
+import application.form.ListOutputForm;
 import application.form.OrgForm;
 import application.form.SettingForm;
 import application.form.UserForm;
 import application.service.DivisionService;
+import application.service.ListOutputService;
 import application.service.OrgService;
 import application.service.SettingService;
 import application.service.UserService;
@@ -65,6 +73,9 @@ public class AdminController {
 
     @Autowired
     private SettingService settingService;
+
+    @Autowired
+    private ListOutputService listOutputService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
@@ -171,8 +182,14 @@ public class AdminController {
         return "redirect:/admin/setting";
     }
 
+    /**
+     * 組織を登録する。
+     * @param orgForm 組織フォーム
+     * @return 組織一覧
+     */
     @RequestMapping(value = "/orgs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public @ResponseBody Map<String, Object> registerOrg(OrgForm orgForm){
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm){
 
         log.debug("requested org form: {}", orgForm);
 
@@ -182,9 +199,17 @@ public class AdminController {
 
         Map<String, Object> res = new HashMap<>();
 
-        return res;
+        res.put("status", "OK");
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    /**
+     * ユーザを登録する。
+     * @param userForm ユーザフォーム
+     * @param bindingResult バインド結果
+     * @return ユーザ登録結果
+     */
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
@@ -275,6 +300,43 @@ public class AdminController {
         res.put("results", data);
 
         return res;
+    }
+
+    /**
+     * リスト出力画面を表示する。
+     * @param listOutputForm リスト出力フォーム
+     * @param model モデル
+     * @return リスト出力画面
+     */
+    @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
+    public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
+
+//    	listOutputForm.setOutputYearMonth("");
+
+        log.debug("listOutputForm : {} :", listOutputForm);
+
+        return "admin/listOutput";
+    }
+
+    /**
+     * 勤怠情報をCSV形式で出力.
+     * @param listOutputForm リスト出力フォーム
+     * @param model モデル
+     * @return CSV形式の勤怠情報
+     * @throws JsonProcessingException CSV変換時の例外
+     */
+    @RequestMapping(value = "/attendance.csv", method = RequestMethod.GET,
+    		produces = "text/csv; charset=SHIFT-JIS; Content-Disposition: attachment")
+	@ResponseBody
+    public Object attendanceCsv(@Valid ListOutputForm listOutputForm,
+            BindingResult bindingResult,
+            Model model) throws JsonProcessingException {
+        log.debug("attendanceCsv : {} :", listOutputForm);
+    	CsvMapper mapper = new CsvMapper();
+    	mapper.findAndRegisterModules();
+    	mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        CsvSchema schema = mapper.schemaFor(DayAttendance.class).withHeader();
+        return mapper.writer(schema).writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.outputYearMonth));
     }
 
     /**

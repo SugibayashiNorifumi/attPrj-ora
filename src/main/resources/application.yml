@@ -21,6 +21,9 @@ spring:
         host: localhost
         password:
         port: 6379
+    mvc:
+        media-types:
+          csv:  text/csv
 security:
     user:
         name: manager
