@@ -43,6 +43,20 @@ public enum MenuCd {
     }
 
     /**
+     * メニューコード(divCd)からenumを取得する。
+     * @param menuCd メニューコード
+     * @return MenuCd。 存在しない場合null
+     */
+    public static MenuCd get(String divCd) {
+        for (MenuCd item : values()) {
+            if (item.divCd.equals(divCd)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * LINEメニューコードからenumを取得する。
      * @param lineMenuCd LINEメニューコード
      * @return MenuCd。 存在しない場合null
