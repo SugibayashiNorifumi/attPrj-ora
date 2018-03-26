@@ -180,4 +180,26 @@ public final class CommonUtils {
         return res;
     }
 
+    /**
+     * セパレータ文字列の指定要素をIntegerで取得する。
+     * @param text セパレートされた文字列
+     * @param seprator セパレータ
+     * @param idx 取得するインデクス(0-N)
+     * @return 取得した数値,取得できない場合null
+     */
+    public static Integer toIntegerSeprator(String text, String seprator, int idx) {
+        Integer res = null;
+        if (StringUtils.isEmpty(text)) {
+            return res;
+        }
+        String[] arr = text.split(seprator);
+        if (arr.length > idx) {
+            try {
+                res = Integer.parseInt(arr[idx], 10);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return res;
+    }
+
 }

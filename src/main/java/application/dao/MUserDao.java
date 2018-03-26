@@ -67,16 +67,45 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
-    public List<UserInfo> findUsers(String orgCd, String name) {
-
+    /**
+     * 管理者のメンバーを取得する。
+     * @param lineId LINE識別子
+     * @param yyyymm 勤怠年月
+     * @return メンバーリスト(リストの最後がlineIdが示すユーザ)
+     */
+    public List<MUser> findAdminMembers(String lineId, String yyyymm) {
+        MUser myUser = getByLineId(lineId);
         Map<String, Object> cond = new HashMap<>();
+        cond.put("lineId", lineId);
+        cond.put("yyyymm", yyyymm);
+        List<MUser> res = sqlTemplate.forList("sql/MUserDao/selectAdminMembers.sql", MUser.class, cond);
+        res.add(myUser);
+        return res;
+    }
 
+    /**
+     * 上長のメンバーを取得する。
+     * @param lineId LINE識別子
+     * @param yyyymm 勤怠年月
+     * @return メンバーリスト(リストの最後がlineIdが示すユーザ)
+     */
+    public List<MUser> findManagerMembers(String lineId, String yyyymm) {
+        MUser myUser = getByLineId(lineId);
+        Map<String, Object> cond = new HashMap<>();
+        cond.put("lineId", lineId);
+        cond.put("yyyymm", yyyymm);
+        cond.put("managerId", myUser.getUserId());
+        List<MUser> res = sqlTemplate.forList("sql/MUserDao/selectManagerMembers.sql", MUser.class, cond);
+        res.add(myUser);
+        return res;
+    }
+
+    public List<UserInfo> findUsers(String orgCd, String name) {
+        Map<String, Object> cond = new HashMap<>();
         cond.put("orgCd", orgCd);
-
         if (!StringUtils.isEmpty(name)) {
             cond.put("likeName", "%" + name + "%");
         }
-
         return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfo.class, cond);
     }
 

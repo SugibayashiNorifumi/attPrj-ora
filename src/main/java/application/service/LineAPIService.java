@@ -275,6 +275,14 @@ public class LineAPIService {
      * @return LINEレスポンス
      */
     public static BotApiResponse pushButtons(String lineId, String templateTitle, List<String> buttonNames) {
+        //最大長分割
+        List<String> thisButtons = buttonNames;
+        List<String> nextButtons = null;
+        if (buttonNames.size() > 4) {
+            thisButtons = buttonNames.subList(0, 4);
+            nextButtons = buttonNames.subList(4, buttonNames.size());
+        }
+
         String thumbnailImageUrl = null; // null可、画像URL(https必須, jpg/png, 縦:横=1:1.51, 最大横1024px, 最大1MB)
         String title = null; // null可、太文字部 最大40文字
         String templateText = templateTitle; // 必須, 内容文字列, 最大60文字(title無しの場合160文字まで可)
@@ -282,7 +290,7 @@ public class LineAPIService {
         // ボタン(アクション)定義
         ArrayList<Action> actionList = new ArrayList<>(); // 最大4アクション
         int btnIndex = 0;
-        for (String buttonLabel : buttonNames) {
+        for (String buttonLabel : thisButtons) {
             if (actionList.size() >= 4) {
                 break;
             }
@@ -305,6 +313,11 @@ public class LineAPIService {
         PushMessage message = new PushMessage(lineId, templateMsg);
         // 送信
         BotApiResponse res = pushMessage(message);
+
+        if (nextButtons != null) {
+            // 続きのボタンを送信
+            pushButtons(lineId, templateTitle, nextButtons);
+        }
         return res;
     }
 
