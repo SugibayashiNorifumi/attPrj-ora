@@ -253,6 +253,20 @@ public class LineAPIService {
     }
 
     /**
+     * プッシュでテキストを送信する。
+     * @param lineId 送信先LINE識別子
+     * @param msg メッセージ
+     * @return LINEのレスポンス
+     */
+    public static BotApiResponse pushMessage(String lineId, String msg) {
+        // メッセージ生成
+        TextMessage textMsg = new TextMessage(msg);
+        PushMessage message = new PushMessage(lineId, textMsg);
+        // 送信
+        return pushMessage(message);
+    }
+
+    /**
      * プッシュでメッセージを送信する。
      * @param message メッセージ
      * @return LINEのレスポンス

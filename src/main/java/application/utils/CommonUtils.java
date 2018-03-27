@@ -41,7 +41,16 @@ public final class CommonUtils {
      * @return 変換後文字列
      */
     public static String toYyyyMmDd() {
-        return DateFormatUtils.format(new Date(), "yyyyMMdd", JST);
+        return toYyyyMmDd(new Date());
+    }
+
+    /**
+     * 日時をyyyyMMdd形式で取得する。
+     * @param date
+     * @return 変換後文字列
+     */
+    public static String toYyyyMmDd(Date date) {
+        return DateFormatUtils.format(date, "yyyyMMdd", JST);
     }
 
     /**

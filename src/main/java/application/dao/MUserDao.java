@@ -118,4 +118,17 @@ public class MUserDao extends AbstractDao<MUser> {
         setUpdateColumns(entity);
         return sqlTemplate.update("sql/MUserDao/update.sql", entity);
     }
+
+    /**
+     * 勤怠未登録のユーザを取得する。
+     * @param yyyyMMdd 出勤日
+     * @param attendanceCd 登録確認対象とする勤怠区分コード
+     * @return 勤怠未登録のユーザ
+     */
+    public List<MUser> findNoneAttendance(String yyyyMMdd, String attendanceCd) {
+        Map<String, Object> cond = new HashMap<>();
+        cond.put("attendanceDay", yyyyMMdd);
+        cond.put("attendanceCd", attendanceCd);
+        return sqlTemplate.forList("sql/MUserDao/findNoneAttendance.sql", MUser.class, cond);
+    }
 }
