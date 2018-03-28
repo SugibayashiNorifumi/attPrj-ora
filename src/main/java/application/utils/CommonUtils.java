@@ -12,12 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
- * <p>
- * Common utilities
- * </p>
+ * ユーティリティメソッド群。
  */
 public final class CommonUtils {
 
+    /** ランダム生成。 */
     private static final SecureRandom RANDOM = new SecureRandom();
 
     /** タイムゾーン：日本。 */
@@ -29,11 +28,28 @@ public final class CommonUtils {
     private CommonUtils() {
     }
 
+    /**
+     * ランダム文字列を生成する。
+     * @return ランダム文字列。
+     */
     public static String getToken() {
         byte[] bytes = new byte[32];
         RANDOM.nextBytes(bytes);
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
         return token;
+    }
+
+    /**
+     * 空の場合、別値を返す。
+     * @param str 検査文字列
+     * @param emptyVal 空の場合の文字列
+     * @return strそのもの。strがnullか空文字の場合emptyVal。
+     */
+    public static String emptyToVal(String str, String emptyVal) {
+        if (StringUtils.isEmpty(str)) {
+            return emptyVal;
+        }
+        return str;
     }
 
     /**
@@ -46,7 +62,7 @@ public final class CommonUtils {
 
     /**
      * 日時をyyyyMMdd形式で取得する。
-     * @param date
+     * @param date 日時
      * @return 変換後文字列
      */
     public static String toYyyyMmDd(Date date) {

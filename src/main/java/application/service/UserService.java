@@ -43,8 +43,8 @@ public class UserService {
     public void registerLineId(Integer userId, String lineId) {
         muserDao.selectByPk(userId).ifPresent(muser -> {
             MUser entity = new MUser();
-            entity.userId = userId;
-            entity.lineId = lineId;
+            entity.setUserId(userId);
+            entity.setLineId(lineId);
             muserDao.update(entity);
         });
     }
@@ -67,7 +67,7 @@ public class UserService {
      * @param user ユーザ情報
      */
     public void registerUser(MUser user) {
-        user.password = passwordEncoder.encode(user.password);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         muserDao.insert(user);
     }
 }

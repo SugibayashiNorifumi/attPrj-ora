@@ -16,15 +16,15 @@ import application.emuns.DelFlag;
 @Component
 public class AdminAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 
         super.additionalAuthenticationChecks(userDetails, authentication);
 
         AdminUser adminUser = (AdminUser) userDetails;
 
-        // �Ǘ����[�U�łȂ��A�������͍폜�ςݏꍇ�͔F�؎��s
-        if(!adminUser.getUser().authCd.equals(AuthCd.ADMIN.getCode())
-                || adminUser.getUser().delFlg.equals(DelFlag.ON.getVal())) {
+        if (!adminUser.getUser().getAuthCd().equals(AuthCd.ADMIN.getCode())
+                || adminUser.getUser().getDelFlg().equals(DelFlag.ON.getVal())) {
             throw new UsernameNotFoundException("user not found");
         }
     }

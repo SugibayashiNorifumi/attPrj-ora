@@ -35,20 +35,29 @@ public class SettingService {
 
     /**
      *
-     * @param setting
-     *            設定マスタエンティティ
+     * @param setting 設定マスタエンティティ
      */
     public void registerSetting(MSetting setting) {
-
-        setting.businessFlagMon = StringUtils.isEmpty(setting.businessFlagMon) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagTue = StringUtils.isEmpty(setting.businessFlagTue) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagWed = StringUtils.isEmpty(setting.businessFlagWed) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagThu = StringUtils.isEmpty(setting.businessFlagThu) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagFri = StringUtils.isEmpty(setting.businessFlagFri) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagSat = StringUtils.isEmpty(setting.businessFlagSat) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.businessFlagSun = StringUtils.isEmpty(setting.businessFlagSun) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-        setting.alertFlag = StringUtils.isEmpty(setting.alertFlag) ? DelFlag.OFF.getVal() : DelFlag.ON.getVal();
-
+        setting.setBusinessFlagMon(toFlag(setting.getBusinessFlagMon()));
+        setting.setBusinessFlagTue(toFlag(setting.getBusinessFlagTue()));
+        setting.setBusinessFlagWed(toFlag(setting.getBusinessFlagWed()));
+        setting.setBusinessFlagThu(setting.getBusinessFlagThu());
+        setting.setBusinessFlagFri(setting.getBusinessFlagFri());
+        setting.setBusinessFlagSat(setting.getBusinessFlagSat());
+        setting.setBusinessFlagSun(setting.getBusinessFlagSun());
+        setting.setAlertFlag(setting.getAlertFlag());
         mSettingDao.update(setting);
+    }
+
+    /**
+     * フラグ値に変換する。
+     * @param str 変換元の文字列
+     * @return 値が存在する場合"1" その他"0"
+     */
+    private String toFlag(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return DelFlag.OFF.getVal();
+        }
+        return DelFlag.ON.getVal();
     }
 }

@@ -1,9 +1,9 @@
 package application.entity;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import lombok.Data;
 
 /**
  * <pre>
@@ -16,23 +16,23 @@ import java.time.LocalDateTime;
 @Data
 public class AbstractEntity implements Serializable {
     /** 登録日時 */
-    public LocalDateTime registDate;
+    private LocalDateTime registDate;
 
     /** 登録者コード */
-    public Integer registUserId;
+    private Integer registUserId;
 
     /** 登録プログラムコード */
-    public String registFuncCd;
+    private String registFuncCd;
 
     /** 更新日時 */
-    public LocalDateTime updateDate;
+    private LocalDateTime updateDate;
 
     /** 更新者コード */
-    public Integer updateUserId;
+    private Integer updateUserId;
 
     /** 更新プログラムコード */
-    public String updateFuncCd;
+    private String updateFuncCd;
 
     /** 論理削除フラグ */
-    public String delFlg;
+    private String delFlg;
 }

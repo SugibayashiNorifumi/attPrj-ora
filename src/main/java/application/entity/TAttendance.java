@@ -12,17 +12,17 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class TAttendance extends AbstractEntity {
     /** ユーザID */
-    public Integer userId;
+    private Integer userId;
 
     /** 出勤日(yyyymmdd) */
-    public String attendanceDay;
+    private String attendanceDay;
 
     /** 勤怠時刻 */
-    public Date attendanceTime;
+    private Date attendanceTime;
 
     /** 勤怠区分コード(汎用区分:2を参照) */
-    public String attendanceCd;
+    private String attendanceCd;
 
     /** 修正フラグ */
-    public String editFlg;
+    private String editFlg;
 }

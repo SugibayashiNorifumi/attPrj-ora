@@ -395,7 +395,7 @@ public class AttendanceService {
         if (userList.size() >= 2) {
             List<String> buttons = new ArrayList<>();
             for (MUser user : userList) {
-                buttons.add(user.userId + " " + user.name);
+                buttons.add(user.getUserId() + " " + user.getName());
             }
             String title = AppMesssageSource.getMessage("line.selectUserByList");
             LineAPIService.pushButtons(lineId, title, buttons);
@@ -418,7 +418,7 @@ public class AttendanceService {
         if (userList.size() >= 2) {
             List<String> buttons = new ArrayList<>();
             for (MUser user : userList) {
-                buttons.add(user.userId + " " + user.name);
+                buttons.add(user.getUserId() + " " + user.getName());
             }
             String title = AppMesssageSource.getMessage("line.selectUserByList");
             LineAPIService.pushButtons(lineId, title, buttons);

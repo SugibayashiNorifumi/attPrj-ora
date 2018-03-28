@@ -123,7 +123,7 @@ public class WebController {
         if (!userOpt.isPresent()) {
             return "redirect:/user/loginError";
         }
-        Integer userId = userOpt.get().userId;
+        Integer userId = userOpt.get().getUserId();
 
         // LINEログイン情報取得
         AccessToken token = lineAPIService.accessToken(code);

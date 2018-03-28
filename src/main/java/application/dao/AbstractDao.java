@@ -23,7 +23,7 @@ abstract class AbstractDao<T extends AbstractEntity> {
      * @return 処理件数
      */
     public int delete(T entity) {
-        entity.delFlg = DelFlag.ON.getVal();
+        entity.setDelFlg(DelFlag.ON.getVal());
         setUpdateColumns(entity);
         return update(entity);
     }
@@ -35,7 +35,7 @@ abstract class AbstractDao<T extends AbstractEntity> {
      */
     public int save(T entity) {
         int res;
-        if (entity.updateDate == null) {
+        if (entity.getUpdateDate() == null) {
             setInsertColumns(entity);
             res = insert(entity);
         } else {
@@ -57,7 +57,7 @@ abstract class AbstractDao<T extends AbstractEntity> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             AdminUser principal = (AdminUser) authentication.getPrincipal();
-            entity.setRegistUserId(principal.getUser().userId);
+            entity.setRegistUserId(principal.getUser().getUserId());
         }
     }
 
@@ -73,7 +73,7 @@ abstract class AbstractDao<T extends AbstractEntity> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             AdminUser principal = (AdminUser) authentication.getPrincipal();
-            entity.setUpdateUserId(principal.getUser().userId);
+            entity.setUpdateUserId(principal.getUser().getUserId());
         }
     }
 }

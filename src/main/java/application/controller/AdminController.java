@@ -45,6 +45,7 @@ import application.service.OrgService;
 import application.service.SettingService;
 import application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+
 /**
  * 管理者向け機能用 画面コントローラ.
  *
@@ -105,9 +106,7 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/find-orgs", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    Map<String, Object> findOrgs() {
+    public @ResponseBody Map<String, Object> findOrgs() {
 
         Map<String, Object> res = new HashMap<>();
 
@@ -122,9 +121,7 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/find-users", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
+    public @ResponseBody Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
 
         Map<String, Object> res = new HashMap<>();
 
@@ -143,7 +140,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
     public String setting(@ModelAttribute SettingForm settingForm,
-                          Model model) {
+            Model model) {
 
         MSetting mSetting = settingService.getSetting().orElse(new MSetting());
 
@@ -166,10 +163,10 @@ public class AdminController {
      */
     @RequestMapping(value = "/setting", method = RequestMethod.POST)
     public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
-                              BindingResult bindingResult,
-                              Model model,
-                              RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()) {
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             return "admin/setting";
         }
 
@@ -189,7 +186,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/orgs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm){
+    public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm) {
 
         log.debug("requested org form: {}", orgForm);
 
@@ -213,11 +210,11 @@ public class AdminController {
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
-                                                            BindingResult bindingResult){
+            BindingResult bindingResult) {
 
         log.debug("requested user form: {}", userForm);
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return genValidationErrorResponse(bindingResult);
         }
 
@@ -246,8 +243,8 @@ public class AdminController {
         List<Map<String, Object>> data = orgService.findOrgs(name).stream()
                 .map(org -> {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("id", org.orgCd);
-                    item.put("text", org.orgName);
+                    item.put("id", org.getOrgCd());
+                    item.put("text", org.getOrgName());
                     return item;
                 }).collect(Collectors.toList());
 
@@ -262,7 +259,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/users/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getUserSelect2Data(@RequestParam(required = false) String orgCd,
-                                                                @RequestParam(required = false) String name) {
+            @RequestParam(required = false) String name) {
 
         log.debug("request param name: {}", name);
 
@@ -292,8 +289,8 @@ public class AdminController {
         List<Map<String, Object>> data = divisionService.getAuthList().stream()
                 .map(auth -> {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("id", auth.divCd);
-                    item.put("text", auth.divCdContent);
+                    item.put("id", auth.getDivCd());
+                    item.put("text", auth.getDivCdContent());
                     return item;
                 }).collect(Collectors.toList());
 
@@ -311,7 +308,7 @@ public class AdminController {
     @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
     public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
 
-//    	listOutputForm.setOutputYearMonth("");
+        //    	listOutputForm.setOutputYearMonth("");
 
         log.debug("listOutputForm : {} :", listOutputForm);
 
@@ -325,18 +322,18 @@ public class AdminController {
      * @return CSV形式の勤怠情報
      * @throws JsonProcessingException CSV変換時の例外
      */
-    @RequestMapping(value = "/attendance.csv", method = RequestMethod.GET,
-    		produces = "text/csv; charset=SHIFT-JIS; Content-Disposition: attachment")
-	@ResponseBody
+    @RequestMapping(value = "/attendance.csv", method = RequestMethod.GET, produces = "text/csv; charset=SHIFT-JIS; Content-Disposition: attachment")
+    @ResponseBody
     public Object attendanceCsv(@Valid ListOutputForm listOutputForm,
             BindingResult bindingResult,
             Model model) throws JsonProcessingException {
         log.debug("attendanceCsv : {} :", listOutputForm);
-    	CsvMapper mapper = new CsvMapper();
-    	mapper.findAndRegisterModules();
-    	mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        CsvMapper mapper = new CsvMapper();
+        mapper.findAndRegisterModules();
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         CsvSchema schema = mapper.schemaFor(DayAttendance.class).withHeader();
-        return mapper.writer(schema).writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.outputYearMonth));
+        return mapper.writer(schema)
+                .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.outputYearMonth));
     }
 
     /**
@@ -349,8 +346,7 @@ public class AdminController {
         return Arrays.stream(passwords.split(","))
                 .collect(Collectors.toMap(
                         password -> password,
-                        password -> passwordEncoder.encode(password)
-                        ));
+                        password -> passwordEncoder.encode(password)));
     }
 
     /**
@@ -360,7 +356,11 @@ public class AdminController {
      */
     private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
         Map<String, List> errors = result.getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)), (a, b) -> {a.add(b); return a;}));
+                .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)),
+                        (a, b) -> {
+                            a.add(b);
+                            return a;
+                        }));
 
         Map<String, Object> errorRes = new HashMap<>();
         errorRes.put("status", "NG");

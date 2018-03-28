@@ -33,10 +33,9 @@ public class OrgService {
 
     public void registerOrg(MOrg org) {
         AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        org.registDate = LocalDateTime.now();
-        org.registUserId = principal.getUser().userId;
-        org.registFuncCd = "0";
-
+        org.setRegistDate(LocalDateTime.now());
+        org.setRegistUserId(principal.getUser().getUserId());
+        org.setRegistFuncCd("0");
         mOrgDao.insert(org);
     }
 }

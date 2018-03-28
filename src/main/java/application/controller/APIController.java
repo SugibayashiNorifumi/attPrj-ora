@@ -59,8 +59,9 @@ public class APIController {
 
     /**
      * 打刻漏れ防止アラートを発行する。<br>
-     *  crontab -e<br>
-     *  *／10 * * * * curl http://192.168.56.1:9000/api/alerts
+     * 定期発行設定例 crontab -e<br>
+     *  curl *／10 * * * * curl http://localhost:9000/api/alerts
+     *  curl *／10 * * * * curl http://192.168.56.1:9000/api/alerts
      * @return 発行結果
      */
     @RequestMapping(value = "alerts", method = { RequestMethod.GET }, produces = PRODUCES_JSON)

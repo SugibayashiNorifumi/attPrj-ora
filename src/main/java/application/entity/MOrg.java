@@ -10,16 +10,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class MOrg extends AbstractEntity {
 
-	/** 組織コード */
-    public String orgCd;
+    /** 組織コード */
+    private String orgCd;
 
     /** 組織名 */
-    public String orgName;
+    private String orgName;
 
     /** 拠点 */
-    public String location;
+    private String location;
 
     /** 表示順序 */
-    public Integer dispSeq;
+    private Integer dispSeq;
 
 }

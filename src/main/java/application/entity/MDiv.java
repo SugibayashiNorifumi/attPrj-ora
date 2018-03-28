@@ -11,15 +11,15 @@ import lombok.EqualsAndHashCode;
 public class MDiv extends AbstractEntity {
 
     /** 汎用区分ID */
-    public Integer divId;
+    private Integer divId;
 
     /** 区分名 */
-    public String divName;
+    private String divName;
 
     /** 区分物理名 */
-    public String divPhysicalName;
+    private String divPhysicalName;
 
     /** 変更可能フラグ */
-    public String allowUpdateFlg;
+    private String allowUpdateFlg;
 
 }

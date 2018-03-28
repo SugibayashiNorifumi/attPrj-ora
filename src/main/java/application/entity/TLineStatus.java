@@ -13,20 +13,20 @@ import lombok.EqualsAndHashCode;
 public class TLineStatus extends AbstractEntity {
 
     /** LINE識別子 */
-    public String lineId;
+    private String lineId;
 
     /** ユーザID */
-    public Integer userId;
+    private Integer userId;
 
     /** メニューコード */
-    public String menuCd;
+    private String menuCd;
 
     /** アクション名 */
-    public String actionName;
+    private String actionName;
 
     /** コンテンツ */
-    public String contents;
+    private String contents;
 
     /** リクエスト時刻 */
-    public Date requestTime;
+    private Date requestTime;
 }

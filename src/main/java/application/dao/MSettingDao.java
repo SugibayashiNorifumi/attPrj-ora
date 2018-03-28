@@ -62,7 +62,7 @@ public class MSettingDao extends AbstractDao<MSetting> {
      * @return 更新件数
      */
     public int update(MSetting entity) {
-        log.debug("updateDate:{}", entity.updateDate);
+        log.debug("updateDate:{}", entity.getUpdateDate());
         return sqlTemplate.update("sql/MSettingDao/update.sql", entity);
     }
 }

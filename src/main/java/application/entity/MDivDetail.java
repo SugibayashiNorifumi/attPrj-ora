@@ -11,48 +11,48 @@ import lombok.EqualsAndHashCode;
 public class MDivDetail extends AbstractEntity {
 
     /** 汎用区分ID */
-    public Integer divId;
+    private Integer divId;
 
     /** 汎用区分コード */
-    public String divCd;
+    private String divCd;
 
     /** 汎用区分コード内容 */
-    public String divCdContent;
+    private String divCdContent;
 
     /** フリー属性１ */
-    public String freeAttribute01;
+    private String freeAttribute01;
 
     /** フリー属性２ */
-    public String freeAttribute02;
+    private String freeAttribute02;
 
     /** フリー属性３ */
-    public String freeAttribute03;
+    private String freeAttribute03;
 
     /** フリー属性４ */
-    public String freeAttribute04;
+    private String freeAttribute04;
 
     /** フリー属性５ */
-    public String freeAttribute05;
+    private String freeAttribute05;
 
     /** フリー属性６ */
-    public String freeAttribute06;
+    private String freeAttribute06;
 
     /** フリー属性７ */
-    public String freeAttribute07;
+    private String freeAttribute07;
 
     /** フリー属性８ */
-    public String freeAttribute08;
+    private String freeAttribute08;
 
     /** フリー属性９ */
-    public String freeAttribute09;
+    private String freeAttribute09;
 
     /** フリー属性１０ */
-    public String freeAttribute10;
+    private String freeAttribute10;
 
     /** 選択不可フラグ(プルダウン表示対象にするかどうか) */
-    public String selFlg;
+    private String selFlg;
 
     /** 変更可能フラグ */
-    public String allowUpdateFlg;
+    private String allowUpdateFlg;
 
 }

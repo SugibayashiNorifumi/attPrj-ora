@@ -31,17 +31,17 @@ public class DaoInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             final User loginUser = (User) authentication.getPrincipal();
-            entity.registUserId = Integer.valueOf(loginUser.getUsername());
+            entity.setRegistUserId(Integer.valueOf(loginUser.getUsername()));
         } else {
-            entity.registUserId = 0;
+            entity.setRegistUserId(0);
         }
 
         // 操作機能の特定
         // TODO:リクエストURLパスからregistFuncCdをセット
-        entity.registFuncCd = "0";
+        entity.setRegistFuncCd("0");
 
         // 登録日時設定
-        entity.registDate = LocalDateTime.now();
+        entity.setRegistDate(LocalDateTime.now());
 
         // insertを続行
         return jp.proceed(new Object[] { entity });
@@ -55,17 +55,17 @@ public class DaoInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             final User loginUser = (User) authentication.getPrincipal();
-            entity.updateUserId = Integer.valueOf(loginUser.getUsername());
+            entity.setUpdateUserId(Integer.valueOf(loginUser.getUsername()));
         } else {
-            entity.updateUserId = 0;
+            entity.setUpdateUserId(0);
         }
 
         // 操作機能の特定
         // TODO:リクエストURLパスからupdateFuncCdをセット
-        entity.updateFuncCd = "0";
+        entity.setUpdateFuncCd("0");
 
         // 更新日時設定
-        entity.updateDate = LocalDateTime.now();
+        entity.setUpdateDate(LocalDateTime.now());
 
         // updateを続行
         Integer upCount = (Integer) jp.proceed(new Object[] { entity });
