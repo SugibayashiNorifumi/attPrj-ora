@@ -1,14 +1,16 @@
-package application.exception;
+package application.emuns;
 
 import org.springframework.http.HttpStatus;
 
-/**
- * APIエラー
- */
-public enum APIErrors implements HttpErrors {
+import application.exception.HttpError;
 
-    INVALID_PARAMETER("ERR-998", HttpStatus.BAD_REQUEST, "パラメータが正しくありません。"),
-    UNEXPECTED("ERR-999", HttpStatus.INTERNAL_SERVER_ERROR, "予期せぬエラーが発生しました。：{0}");
+/**
+ * 画面系エラー
+ */
+public enum ApplicationErrors implements HttpError {
+
+    ALREADY_UPDATED("ERR-998", HttpStatus.BAD_REQUEST, "他のユーザにより既に更新されています。"),
+    UNEXPECTED("ERR-999", HttpStatus.INTERNAL_SERVER_ERROR, "予期せぬエラーが発生しました。");
 
     private String code;
 
@@ -16,7 +18,7 @@ public enum APIErrors implements HttpErrors {
 
     private String message;
 
-    APIErrors(String code, HttpStatus status, String message) {
+    ApplicationErrors(String code, HttpStatus status, String message) {
         this.code = code;
         this.status = status;
         this.message = message;

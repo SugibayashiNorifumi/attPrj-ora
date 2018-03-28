@@ -1,4 +1,4 @@
-package application.exception;
+package application.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +20,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import application.controller.APIController;
+import application.emuns.APIErrors;
+import application.exception.APIException;
+import application.exception.HttpError;
 
 /**
  * Restコントローラ共通例外処理クラス
@@ -97,7 +100,7 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
      *            例外
      * @return レスポンス
      */
-    private ResponseEntity<RestError> handleError(HttpErrors error, Exception ex) {
+    private ResponseEntity<RestError> handleError(HttpError error, Exception ex) {
         final Map<String, String> errorDetail = new HashMap<>();
         errorDetail.put("code", error.getErrorCode());
         errorDetail.put("message", ex.getMessage());

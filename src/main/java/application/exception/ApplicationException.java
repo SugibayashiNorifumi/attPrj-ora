@@ -8,31 +8,31 @@ import java.text.MessageFormat;
  */
 public class ApplicationException extends RuntimeException {
 
-    private HttpErrors error;
+    private HttpError error;
 
     private Throwable cause;
 
     private Object[] args;
 
-    public ApplicationException(HttpErrors error) {
+    public ApplicationException(HttpError error) {
         super();
         this.error = error;
     }
 
-    public ApplicationException(HttpErrors error, Throwable cause) {
+    public ApplicationException(HttpError error, Throwable cause) {
 
         super();
         this.error = error;
         this.cause = cause;
     }
 
-    public ApplicationException(HttpErrors error, String... args) {
+    public ApplicationException(HttpError error, String... args) {
         super();
         this.error = error;
         this.args = args;
     }
 
-    public ApplicationException(HttpErrors error, Throwable cause, String... args) {
+    public ApplicationException(HttpError error, Throwable cause, String... args) {
         super();
         this.error = error;
         this.args = args;
@@ -47,7 +47,7 @@ public class ApplicationException extends RuntimeException {
         }
     }
 
-    public HttpErrors getError() {
+    public HttpError getError() {
         return error;
     }
 

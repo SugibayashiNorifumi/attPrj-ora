@@ -3,10 +3,9 @@ package application.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * エラー情報インターフェース
- *
+ * HTTPに関するエラーを示すインターフェース。
  */
-public interface HttpErrors {
+public interface HttpError {
     /**
      * エラーコードを取得する。
      */

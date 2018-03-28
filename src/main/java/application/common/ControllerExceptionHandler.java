@@ -1,4 +1,4 @@
-package application.exception;
+package application.common;
 
 import java.text.MessageFormat;
 
@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import application.controller.WebController;
+import application.emuns.ApplicationErrors;
+import application.exception.ApplicationException;
+import application.exception.HttpError;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,7 +34,7 @@ public class ControllerExceptionHandler {
         return handleError(ApplicationErrors.UNEXPECTED, ex, ex.toString());
     }
 
-    private ModelAndView handleError(HttpErrors error, Exception ex, Object... args) {
+    private ModelAndView handleError(HttpError error, Exception ex, Object... args) {
         String message;
         if (args != null) {
             message = MessageFormat.format(error.getMessage(), args);

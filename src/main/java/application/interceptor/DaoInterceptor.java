@@ -10,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import application.emuns.ApplicationErrors;
 import application.entity.AbstractEntity;
-import application.exception.ApplicationErrors;
 import application.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 

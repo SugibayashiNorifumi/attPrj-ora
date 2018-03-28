@@ -5,19 +5,19 @@ package application.exception;
  */
 public class APIException extends ApplicationException {
 
-    public APIException(HttpErrors error) {
+    public APIException(HttpError error) {
         super(error);
     }
 
-    public APIException(HttpErrors error, Throwable cause) {
+    public APIException(HttpError error, Throwable cause) {
         super(error, cause);
     }
 
-    public APIException(HttpErrors error, String... args) {
+    public APIException(HttpError error, String... args) {
         super(error, args);
     }
 
-    public APIException(HttpErrors error, Throwable cause, String... args) {
+    public APIException(HttpError error, Throwable cause, String... args) {
         super(error, cause, args);
     }
 }
