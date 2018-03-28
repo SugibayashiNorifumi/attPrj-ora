@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import application.dto.UserInfo;
+import application.dto.UserInfoDto;
 import application.entity.MUser;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
@@ -100,13 +100,13 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
-    public List<UserInfo> findUsers(String orgCd, String name) {
+    public List<UserInfoDto> findUsers(String orgCd, String name) {
         Map<String, Object> cond = new HashMap<>();
         cond.put("orgCd", orgCd);
         if (!StringUtils.isEmpty(name)) {
             cond.put("likeName", "%" + name + "%");
         }
-        return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfo.class, cond);
+        return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfoDto.class, cond);
     }
 
     public int insert(MUser entity) {

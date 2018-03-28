@@ -2,26 +2,27 @@ package application.dto;
 
 import java.io.Serializable;
 
+import lombok.Data;
+
 /**
  * ユーザ情報DTO
- *
  * @author 作成者氏名
- *
  */
-public class UserInfo implements Serializable {
+@Data
+public class UserInfoDto implements Serializable {
 
     /** ユーザID */
-    public String userId;
+    private String userId;
 
     /** ユーザ氏名 */
-    public String name;
+    private String name;
 
     /** メールアドレス */
-    public String mail;
+    private String mail;
 
     /** 権限名 */
-    public String authName;
+    private String authName;
 
     /** 組織名 */
-    public String orgName;
+    private String orgName;
 }

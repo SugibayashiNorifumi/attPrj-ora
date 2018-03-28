@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
-import application.dto.DayAttendance;
+import application.dto.DayAttendanceDto;
 import application.entity.MOrg;
 import application.entity.MSetting;
 import application.entity.MUser;
@@ -268,8 +268,8 @@ public class AdminController {
         List<Map<String, Object>> data = userService.findUsers(orgCd, name).stream()
                 .map(user -> {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("id", user.userId);
-                    item.put("text", user.name);
+                    item.put("id", user.getUserId());
+                    item.put("text", user.getName());
                     return item;
                 }).collect(Collectors.toList());
 
@@ -331,7 +331,7 @@ public class AdminController {
         CsvMapper mapper = new CsvMapper();
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        CsvSchema schema = mapper.schemaFor(DayAttendance.class).withHeader();
+        CsvSchema schema = mapper.schemaFor(DayAttendanceDto.class).withHeader();
         return mapper.writer(schema)
                 .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.outputYearMonth));
     }

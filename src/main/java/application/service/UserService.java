@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import application.dao.MUserDao;
-import application.dto.UserInfo;
+import application.dto.UserInfoDto;
 import application.entity.MUser;
 
 @Service
@@ -57,7 +57,7 @@ public class UserService {
      *
      * @return ユーザ情報リスト
      */
-    public List<UserInfo> findUsers(String orgCd, String name) {
+    public List<UserInfoDto> findUsers(String orgCd, String name) {
         return muserDao.findUsers(orgCd, name);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import application.dao.TAttendanceDao;
-import application.dto.DayAttendance;
+import application.dto.DayAttendanceDto;
 import application.emuns.AttenanceCd;
 import application.entity.TAttendance;
 
@@ -33,11 +33,11 @@ public class ListOutputService {
     /**
      * 勤怠情報をCSV形式で取得する。
      */
-    public List<DayAttendance> getDayAttendanceList(String yyyymm) {
+    public List<DayAttendanceDto> getDayAttendanceList(String yyyymm) {
     	List<TAttendance> attendanceList = tAttendancedDao.selectByMonth(yyyymm);
-    	Map<String, DayAttendance> daysAttendanceMap = new LinkedHashMap<String, DayAttendance>();
+    	Map<String, DayAttendanceDto> daysAttendanceMap = new LinkedHashMap<String, DayAttendanceDto>();
     	attendanceList.stream().forEach(tAttendance -> this.setDaysAttendanceMap(daysAttendanceMap, tAttendance));
-    	return new ArrayList<DayAttendance>(daysAttendanceMap.values());
+    	return new ArrayList<DayAttendanceDto>(daysAttendanceMap.values());
     }
 
     /**
@@ -45,13 +45,13 @@ public class ListOutputService {
      * @param daysAttendanceMap 日付ごとの勤怠情報マップ
      * @param tAttendance 勤怠情報エンティティ
      */
-    private void setDaysAttendanceMap(Map<String, DayAttendance> daysAttendanceMap, TAttendance tAttendance) {
-    	DayAttendance dayAttendance;
+    private void setDaysAttendanceMap(Map<String, DayAttendanceDto> daysAttendanceMap, TAttendance tAttendance) {
+    	DayAttendanceDto dayAttendance;
     	String daysAttendanceKey = getDaysAttendanceMapKey(tAttendance);
     	if (daysAttendanceMap.containsKey(daysAttendanceKey)) {
     		dayAttendance = daysAttendanceMap.get(daysAttendanceKey);
     	} else {
-    		dayAttendance = new DayAttendance();
+    		dayAttendance = new DayAttendanceDto();
     		daysAttendanceMap.put(daysAttendanceKey, dayAttendance);
         	dayAttendance.setUserId(tAttendance.getUserId());
         	dayAttendance.setAttendanceDay(tAttendance.getAttendanceDay());

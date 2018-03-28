@@ -12,14 +12,12 @@ import lombok.Data;
 
 /**
  * 1日分の勤怠情報DTO
- *
  * @author 作成者氏名
- *
  */
 @Data
 @Builder
-@JsonPropertyOrder({"ユーザID", "出勤日", "出勤時刻", "退勤時刻"})
-public class DayAttendance implements Serializable {
+@JsonPropertyOrder({ "ユーザID", "出勤日", "出勤時刻", "退勤時刻" })
+public class DayAttendanceDto implements Serializable {
     /** ユーザID */
     @JsonProperty("ユーザID")
     private Integer userId;
@@ -41,7 +39,8 @@ public class DayAttendance implements Serializable {
     /**
      * デフォルトコンストラクタ.
      */
-    public DayAttendance() {};
+    public DayAttendanceDto() {
+    }
 
     /**
      * コンストラクタ.
@@ -50,10 +49,11 @@ public class DayAttendance implements Serializable {
      * @param arrivaTime 出勤時刻
      * @param clockOutTime 退勤時刻
      */
-    public DayAttendance(Integer userId, String attendanceDay, LocalDateTime arrivaTime, LocalDateTime clockOutTime) {
-    	this.userId = userId;
-    	this.attendanceDay = attendanceDay;
-    	this.arrivalTime = arrivaTime;
-    	this.clockOutTime = clockOutTime;
-    };
+    public DayAttendanceDto(Integer userId, String attendanceDay, LocalDateTime arrivaTime,
+            LocalDateTime clockOutTime) {
+        this.userId = userId;
+        this.attendanceDay = attendanceDay;
+        this.arrivalTime = arrivaTime;
+        this.clockOutTime = clockOutTime;
+    }
 }
