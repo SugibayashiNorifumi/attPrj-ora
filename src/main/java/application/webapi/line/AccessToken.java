@@ -1,4 +1,4 @@
-package application.line.api.response;
+package application.webapi.line;
 
 import java.io.Serializable;
 

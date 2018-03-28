@@ -1,4 +1,4 @@
-package application.line.api.response;
+package application.webapi.line;
 
 public final class Verify {
 

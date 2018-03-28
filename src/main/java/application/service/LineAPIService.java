@@ -45,11 +45,11 @@ import com.linecorp.bot.servlet.LineBotCallbackRequestParser;
 
 import application.controller.APIController;
 import application.emuns.MenuCd;
-import application.line.api.LineAPI;
-import application.line.api.response.AccessToken;
-import application.line.api.response.IdToken;
-import application.line.api.response.Verify;
 import application.utils.ClientUtils;
+import application.webapi.line.AccessToken;
+import application.webapi.line.IdToken;
+import application.webapi.line.LineAPI;
+import application.webapi.line.Verify;
 import retrofit2.Call;
 
 /**

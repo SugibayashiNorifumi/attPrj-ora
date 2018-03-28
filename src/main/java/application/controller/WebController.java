@@ -23,12 +23,12 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 
 import application.entity.MUser;
 import application.form.LoginForm;
-import application.line.api.response.AccessToken;
-import application.line.api.response.IdToken;
 import application.service.LineAPIService;
 import application.service.UserService;
 import application.utils.CommonUtils;
 import application.utils.LineUtils;
+import application.webapi.line.AccessToken;
+import application.webapi.line.IdToken;
 
 /**
  * 一般ユーザ向け機能用 画面コントローラ.

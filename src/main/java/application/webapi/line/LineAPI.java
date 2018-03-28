@@ -1,7 +1,5 @@
-package application.line.api;
+package application.webapi.line;
 
-import application.line.api.response.AccessToken;
-import application.line.api.response.Verify;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
