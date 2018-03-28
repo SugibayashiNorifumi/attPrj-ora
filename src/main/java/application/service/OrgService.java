@@ -25,7 +25,7 @@ public class OrgService {
     /**
      * 組織を検索する
      * @param name 名前
-     * @return 組織情報リスト*
+     * @return 組織情報リスト
      */
     public List<MOrg> findOrgs(String name) {
         return mOrgDao.findOrgs(name);

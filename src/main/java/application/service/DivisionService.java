@@ -20,7 +20,7 @@ public class DivisionService {
     private MDivDao mDivDao;
 
     /**
-     * 権限コード区分明細を取得する
+     * 権限コード区分明細を取得する。
      *
      * @return 区分明細情報リスト
      */

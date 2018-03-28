@@ -3,8 +3,6 @@ package application.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,18 +16,26 @@ import application.entity.MUser;
 @Transactional
 public class UserService {
 
-    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     MUserDao muserDao;
 
+    /**
+     * メールアドレスをもとにユーザを取得する。
+     * @param mail メールアドレス
+     * @return ユーザ情報
+     */
     public Optional<MUser> getUserByMail(String mail) {
         return muserDao.selectByMail(mail);
     }
 
+    /**
+     * LINE IDをもとにユーザを取得する。
+     * @param lineId LINE ID
+     * @return ユーザ情報
+     */
     public Optional<MUser> getUserByLineId(String lineId) {
         return muserDao.selectByLineId(lineId);
     }

@@ -31,13 +31,17 @@ public class ListOutputService {
     private TAttendanceDao tAttendancedDao;
 
     /**
-     * 勤怠情報をCSV形式で取得する。
+     * 1日ごとの勤怠情報リストを返します。
+     * @param yyyymm 出勤日(年月)
      */
     public List<DayAttendanceDto> getDayAttendanceList(String yyyymm) {
-    	List<TAttendance> attendanceList = tAttendancedDao.selectByMonth(yyyymm);
-    	Map<String, DayAttendanceDto> daysAttendanceMap = new LinkedHashMap<String, DayAttendanceDto>();
-    	attendanceList.stream().forEach(tAttendance -> this.setDaysAttendanceMap(daysAttendanceMap, tAttendance));
-    	return new ArrayList<DayAttendanceDto>(daysAttendanceMap.values());
+        // TAttendanceエンティティの情報を、同じ日の出勤、退勤をセットにした形に変換する
+        List<TAttendance> attendanceList = tAttendancedDao.selectByMonth(yyyymm);
+        Map<String, DayAttendanceDto> daysAttendanceMap = new LinkedHashMap<String, DayAttendanceDto>();
+        attendanceList.stream().forEach(tAttendance -> this.setDaysAttendanceMap(daysAttendanceMap, tAttendance));
+
+        // Mapの値部分のみをList化してリターンする
+        return new ArrayList<DayAttendanceDto>(daysAttendanceMap.values());
     }
 
     /**
@@ -46,24 +50,27 @@ public class ListOutputService {
      * @param tAttendance 勤怠情報エンティティ
      */
     private void setDaysAttendanceMap(Map<String, DayAttendanceDto> daysAttendanceMap, TAttendance tAttendance) {
-    	DayAttendanceDto dayAttendance;
-    	String daysAttendanceKey = getDaysAttendanceMapKey(tAttendance);
-    	if (daysAttendanceMap.containsKey(daysAttendanceKey)) {
-    		dayAttendance = daysAttendanceMap.get(daysAttendanceKey);
-    	} else {
-    		dayAttendance = new DayAttendanceDto();
-    		daysAttendanceMap.put(daysAttendanceKey, dayAttendance);
-        	dayAttendance.setUserId(tAttendance.getUserId());
-        	dayAttendance.setAttendanceDay(tAttendance.getAttendanceDay());
-    	}
-    	ZoneId zone = ZoneId.systemDefault();
-    	if (AttenanceCd.ARRIVAL.getCode().equals(tAttendance.getAttendanceCd())) {
-        	dayAttendance.setArrivalTime(
-        			LocalDateTime.ofInstant(tAttendance.getAttendanceTime().toInstant(), zone));
-    	} else {
-        	dayAttendance.setClockOutTime(
-        			LocalDateTime.ofInstant(tAttendance.getAttendanceTime().toInstant(), zone));
-    	}
+        DayAttendanceDto dayAttendance;
+        String daysAttendanceKey = getDaysAttendanceMapKey(tAttendance);
+        if (daysAttendanceMap.containsKey(daysAttendanceKey)) {
+            // すでに同じユーザと日付の組み合わせのdayAttendanceが存在する場合はMapから取得
+            dayAttendance = daysAttendanceMap.get(daysAttendanceKey);
+        } else {
+            // 同じユーザと日付の組み合わせのdayAttendanceが存在しない場合は生成して情報をセット
+            dayAttendance = new DayAttendanceDto();
+            daysAttendanceMap.put(daysAttendanceKey, dayAttendance);
+            dayAttendance.setUserId(tAttendance.getUserId());
+            dayAttendance.setAttendanceDay(tAttendance.getAttendanceDay());
+        }
+        ZoneId zone = ZoneId.systemDefault();
+        // 出勤か退勤で時刻データをセットするフィールドを変える
+        if (AttenanceCd.ARRIVAL == AttenanceCd.getByCode(tAttendance.getAttendanceCd())) {
+            dayAttendance.setArrivalTime(
+                    LocalDateTime.ofInstant(tAttendance.getAttendanceTime().toInstant(), zone));
+        } else {
+            dayAttendance.setClockOutTime(
+                    LocalDateTime.ofInstant(tAttendance.getAttendanceTime().toInstant(), zone));
+        }
     }
 
     /**
@@ -72,6 +79,6 @@ public class ListOutputService {
      * @return 日付ごとの勤怠情報マップ用キー
      */
     private String getDaysAttendanceMapKey(TAttendance tAttendance) {
-    	return tAttendance.getUserId() + "_" + tAttendance.getAttendanceDay();
+        return tAttendance.getUserId() + "_" + tAttendance.getAttendanceDay();
     }
 }

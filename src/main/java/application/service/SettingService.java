@@ -25,7 +25,7 @@ public class SettingService {
     private MSettingDao mSettingDao;
 
     /**
-     * 設定マスタ情報を取得する
+     * 設定マスタ情報を取得する。
      *
      * @return 設定情報
      */
@@ -34,7 +34,7 @@ public class SettingService {
     }
 
     /**
-     *
+     * 設定を保存する。
      * @param setting 設定マスタエンティティ
      */
     public void registerSetting(MSetting setting) {

@@ -92,7 +92,7 @@ public class AdminController {
     /**
      * ユーザ・組織管理画面表示.
      *
-     * @return String
+     * @return 画面のパス
      */
     @RequestMapping(value = "/user-org")
     public String getUserOrg(Model model) {
@@ -101,9 +101,9 @@ public class AdminController {
     }
 
     /**
-     * 組織検索
+     * 組織検索を実行する。
      *
-     * @return
+     * @return 組織検索結果
      */
     @RequestMapping(value = "/find-orgs", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findOrgs() {
@@ -116,9 +116,9 @@ public class AdminController {
     }
 
     /**
-     * ユーザ検索
+     * ユーザ検索を実行する。
      *
-     * @return
+     * @return ユーザ検索結果
      */
     @RequestMapping(value = "/find-users", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
@@ -132,15 +132,13 @@ public class AdminController {
 
     /**
      *
-     * 設定画面
+     * 設定画面を開く。
      *
-     * @param settingForm
-     * @param model
-     * @return
+     * @param settingForm 設定フォーム
+     * @return 画面のパス
      */
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
-    public String setting(@ModelAttribute SettingForm settingForm,
-            Model model) {
+    public String setting(@ModelAttribute SettingForm settingForm) {
 
         MSetting mSetting = settingService.getSetting().orElse(new MSetting());
 
@@ -152,21 +150,17 @@ public class AdminController {
     }
 
     /**
-     *
-     * 設定情報を登録する
-     *
-     * @param settingForm
-     * @param bindingResult
-     * @param model
-     * @param redirectAttributes
-     * @return
+     * 設定情報を登録する。
+     * @param settingForm 設定フォーム
+     * @param bindingResult バインド結果
+     * @param redirectAttributes リダイレクト先にパラメータを渡すためのオブジェクト
+     * @return 画面のパス
      */
     @RequestMapping(value = "/setting", method = RequestMethod.POST)
     public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
-            BindingResult bindingResult,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
             return "admin/setting";
         }
 
@@ -230,8 +224,8 @@ public class AdminController {
     }
 
     /**
-     * 組織選択Select2データソースを取得する
-     * @return
+     * 組織選択Select2データソースを取得する。
+     * @return 組織選択Select2データソース
      */
     @RequestMapping(value = "/orgs/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String name) {
@@ -254,8 +248,8 @@ public class AdminController {
     }
 
     /**
-     * ユーザ選択Select2データソースを取得する
-     * @return
+     * ユーザ選択Select2データソースを取得する。
+     * @return ユーザ選択Select2データソース
      */
     @RequestMapping(value = "/users/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getUserSelect2Data(@RequestParam(required = false) String orgCd,
@@ -279,8 +273,8 @@ public class AdminController {
     }
 
     /**
-     * 権限選択Select2データソースを取得する
-     * @return
+     * 権限選択Select2データソースを取得する。
+     * @return 権限選択Select2データソース
      */
     @RequestMapping(value = "/auths/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getAuthSelect2Data() {
@@ -308,15 +302,13 @@ public class AdminController {
     @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
     public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
 
-        //    	listOutputForm.setOutputYearMonth("");
-
         log.debug("listOutputForm : {} :", listOutputForm);
 
         return "admin/listOutput";
     }
 
     /**
-     * 勤怠情報をCSV形式で出力.
+     * 勤怠情報をCSV形式で出力する.
      * @param listOutputForm リスト出力フォーム
      * @param model モデル
      * @return CSV形式の勤怠情報
@@ -327,7 +319,10 @@ public class AdminController {
     public Object attendanceCsv(@Valid ListOutputForm listOutputForm,
             BindingResult bindingResult,
             Model model) throws JsonProcessingException {
+
         log.debug("attendanceCsv : {} :", listOutputForm);
+
+        // ユーザごとの1日分の勤怠情報(DayAttendance)を1行としたリストを取得し、CsvMapperでCSV化してリターン
         CsvMapper mapper = new CsvMapper();
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -337,9 +332,9 @@ public class AdminController {
     }
 
     /**
-     * エンコードされたパスワード確認
+     * パスワードをハッシュ化する。
      * @param passwords 平文パスワード
-     * @return
+     * @return ハッシュ化パスワード
      */
     @RequestMapping(value = "/encodePassword", method = RequestMethod.GET)
     public @ResponseBody Map<String, String> encodePassword(@RequestParam(name = "passwords") String passwords) {
@@ -366,6 +361,6 @@ public class AdminController {
         errorRes.put("status", "NG");
         errorRes.put("errors", errors);
 
-        return new ResponseEntity(errorRes, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Map<String, Object>>(errorRes, HttpStatus.BAD_REQUEST);
     }
 }

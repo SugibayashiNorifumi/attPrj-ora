@@ -31,6 +31,19 @@ public enum AttenanceCd {
     }
 
     /**
+     * 勤怠区分コード文字列から勤怠区分コードを取得する。
+     * @return 勤怠区分コード
+     */
+    public static AttenanceCd getByCode(String code) {
+        for (AttenanceCd item : values()) {
+            if (item.code.equals(code)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 勤怠区分名から勤怠区分コードを取得する。
      * @return 勤怠区分コード
      */
