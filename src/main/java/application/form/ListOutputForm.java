@@ -7,5 +7,5 @@ import lombok.Data;
  */
 @Data
 public class ListOutputForm {
-    public String outputYearMonth;
+    private String outputYearMonth;
 }

@@ -9,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class OrgForm implements Serializable {
-    public String orgCd;
-    public String orgName;
-    public String location;
-    public Integer dispSeq;
+    private String orgCd;
+    private String orgName;
+    private String location;
+    private Integer dispSeq;
 }

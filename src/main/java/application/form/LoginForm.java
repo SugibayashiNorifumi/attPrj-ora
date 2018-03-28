@@ -3,26 +3,17 @@ package application.form;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import lombok.Data;
+
 /**
  * 管理者ログイン用Formクラス.
- * @author svcn053
- *
  */
+@Data
 public class LoginForm {
-
     /**
-     *
+     * メールアドレス。
      */
     @NotBlank
     @Email
-    public String mail;
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
+    private String mail;
 }

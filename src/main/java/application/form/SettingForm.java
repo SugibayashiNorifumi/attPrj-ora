@@ -9,22 +9,22 @@ import lombok.Data;
  */
 @Data
 public class SettingForm {
-    public String openTime;
-    public String openMinutes;
-    public String closeTime;
-    public String closeMinutes;
-    public String alertOpenTime;
-    public String alertOpenMinutes;
-    public String alertCloseTime;
-    public String alertCloseMinutes;
-    public String businessFlagMon;
-    public String businessFlagTue;
-    public String businessFlagWed;
-    public String businessFlagThu;
-    public String businessFlagFri;
-    public String businessFlagSat;
-    public String businessFlagSun;
-    public String alertFlag;
+    private String openTime;
+    private String openMinutes;
+    private String closeTime;
+    private String closeMinutes;
+    private String alertOpenTime;
+    private String alertOpenMinutes;
+    private String alertCloseTime;
+    private String alertCloseMinutes;
+    private String businessFlagMon;
+    private String businessFlagTue;
+    private String businessFlagWed;
+    private String businessFlagThu;
+    private String businessFlagFri;
+    private String businessFlagSat;
+    private String businessFlagSun;
+    private String alertFlag;
 
     public void setStartTime(String value) {
         if (!StringUtils.isEmpty(value)) {

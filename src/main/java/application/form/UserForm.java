@@ -7,13 +7,11 @@ import lombok.Data;
  */
 @Data
 public class UserForm {
-    public Integer userId;
-    public String password;
-    public String name;
-    public String mail;
-    public String orgCd;
-    public Integer managerId;
-    public String authCd;
-
+    private Integer userId;
+    private String password;
+    private String name;
+    private String mail;
+    private String orgCd;
+    private Integer managerId;
+    private String authCd;
 }
-

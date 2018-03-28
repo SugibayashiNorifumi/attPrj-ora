@@ -70,14 +70,14 @@ public class WebController {
             return "user/login";
         }
 
-        if (!userService.getUserByMail(loginForm.mail).isPresent()) {
+        if (!userService.getUserByMail(loginForm.getMail()).isPresent()) {
             model.addAttribute("errorMessage", "メールアドレスが存在しません");
             return "user/login";
         }
 
-        logger.debug("mail address :" + loginForm.mail);
+        logger.debug("mail address :" + loginForm.getMail());
 
-        final String state = loginForm.mail;
+        final String state = loginForm.getMail();
         final String nonce = CommonUtils.getToken();
         //        httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
         //        httpSession.setAttribute(NONCE, nonce);

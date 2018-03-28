@@ -333,7 +333,7 @@ public class AdminController {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         CsvSchema schema = mapper.schemaFor(DayAttendanceDto.class).withHeader();
         return mapper.writer(schema)
-                .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.outputYearMonth));
+                .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.getOutputYearMonth()));
     }
 
     /**
