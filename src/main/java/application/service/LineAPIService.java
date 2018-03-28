@@ -49,7 +49,7 @@ import application.line.api.LineAPI;
 import application.line.api.response.AccessToken;
 import application.line.api.response.IdToken;
 import application.line.api.response.Verify;
-import application.utils.Client;
+import application.utils.ClientUtils;
 import retrofit2.Call;
 
 /**
@@ -336,7 +336,7 @@ public class LineAPIService {
     }
 
     private <R> R getClient(final Function<LineAPI, Call<R>> function) {
-        return Client.getClient("https://api.line.me/", LineAPI.class, function);
+        return ClientUtils.getClient("https://api.line.me/", LineAPI.class, function);
     }
 
 }

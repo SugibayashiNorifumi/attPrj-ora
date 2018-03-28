@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * HTTPリクエストに関するユーティリティ。
  */
-public final class Client {
+public final class ClientUtils {
 
     /**
      * HTTPリクエスト発行処理を生成する。

@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 
-import application.config.AppMesssageSource;
+import application.context.AppMesssageSource;
 import application.dao.MSettingDao;
 import application.dao.MUserDao;
 import application.dao.TAttendanceDao;

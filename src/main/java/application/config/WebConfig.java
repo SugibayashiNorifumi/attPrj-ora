@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import application.context.AppMesssageSource;
+
 /**
  * <pre>
  * WEBアプリケーション設定クラス

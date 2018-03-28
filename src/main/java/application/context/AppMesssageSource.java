@@ -1,4 +1,4 @@
-package application.config;
+package application.context;
 
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
