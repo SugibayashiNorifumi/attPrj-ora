@@ -8,9 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import application.context.AdminUser;
 import application.dao.MOrgDao;
 import application.entity.MOrg;
-import application.security.AdminUser;
 
 /**
  * 組織サービス

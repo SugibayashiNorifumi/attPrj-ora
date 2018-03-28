@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import application.context.AdminUser;
 import application.emuns.DelFlag;
 import application.entity.AbstractEntity;
-import application.security.AdminUser;
 
 /**
  * DAO共通抽象クラス
