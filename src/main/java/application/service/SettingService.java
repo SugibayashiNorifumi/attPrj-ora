@@ -41,11 +41,11 @@ public class SettingService {
         setting.setBusinessFlagMon(toFlag(setting.getBusinessFlagMon()));
         setting.setBusinessFlagTue(toFlag(setting.getBusinessFlagTue()));
         setting.setBusinessFlagWed(toFlag(setting.getBusinessFlagWed()));
-        setting.setBusinessFlagThu(setting.getBusinessFlagThu());
-        setting.setBusinessFlagFri(setting.getBusinessFlagFri());
-        setting.setBusinessFlagSat(setting.getBusinessFlagSat());
-        setting.setBusinessFlagSun(setting.getBusinessFlagSun());
-        setting.setAlertFlag(setting.getAlertFlag());
+        setting.setBusinessFlagThu(toFlag(setting.getBusinessFlagThu()));
+        setting.setBusinessFlagFri(toFlag(setting.getBusinessFlagFri()));
+        setting.setBusinessFlagSat(toFlag(setting.getBusinessFlagSat()));
+        setting.setBusinessFlagSun(toFlag(setting.getBusinessFlagSun()));
+        setting.setAlertFlag(toFlag(setting.getAlertFlag()));
         mSettingDao.update(setting);
     }
 
