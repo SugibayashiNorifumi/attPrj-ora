@@ -12,6 +12,9 @@ import application.dao.MUserDao;
 import application.dto.UserInfoDto;
 import application.entity.MUser;
 
+/**
+ * ユーザ情報操作サービスクラス。
+ */
 @Service
 @Transactional
 public class UserService {

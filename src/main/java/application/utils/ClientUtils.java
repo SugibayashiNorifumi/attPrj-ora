@@ -16,6 +16,9 @@ public final class ClientUtils {
 
     /**
      * HTTPリクエスト発行処理を生成する。
+     * @param url 送信先URL
+     * @param service サービスクラス
+     * @param function 処理関数
      * @return 発行処理
      */
     public static <T, R> R getClient(

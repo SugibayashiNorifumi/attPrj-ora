@@ -9,12 +9,19 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
- * <p>
- * LINE v2 API interface
- * </p>
+ * LINE v2 API interface.
  */
 public interface LineAPI {
 
+    /**
+     * アクセストークンを発行する。
+     * @param grant_type 付与タイプ
+     * @param client_id チャネルID
+     * @param client_secret チャネルシークレット
+     * @param callback_url コールバックURL
+     * @param code 認可コード
+     * @return アクセストークン
+     */
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("oauth2/v2.1/token")
@@ -25,6 +32,14 @@ public interface LineAPI {
             @Field("redirect_uri") String callback_url,
             @Field("code") String code);
 
+    /**
+     * アクセストークンを更新する。
+     * @param grant_type "refresh_token"固定
+     * @param refresh_token リフレッシュトークン
+     * @param client_id チャネルID
+     * @param client_secret チャネルシークレット
+     * @return アクセストークン
+     */
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("oauth2/v2.1/token")
@@ -34,11 +49,23 @@ public interface LineAPI {
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret);
 
+    /**
+     * アクセストークンを検証する。
+     * @param access_token アクセストークン
+     * @return 検証結果
+     */
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @GET("oauth2/v2.1/verify")
     Call<Verify> verify(
             @Query("access_token") String access_token);
 
+    /**
+     * アクセストークンを取り消す。
+     * @param access_token アクセストークン
+     * @param client_id チャネルID
+     * @param client_secret チャネルシークレット
+     * @return 空。値は無し。
+     */
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("oauth2/v2.1/revoke")
