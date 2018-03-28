@@ -7,8 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +25,8 @@ import application.utils.CommonUtils;
 @RestController
 @RequestMapping(value = "api/")
 public class APIController {
-    /** このクラスのロガー。 */
-    private static final Logger logger = LoggerFactory.getLogger(APIController.class);
+    //    /** このクラスのロガー。 */
+    //    private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
     /** レスポンス型定義：JSON。 */
     public static final String PRODUCES_JSON = "application/json; charset=UTF-8";

@@ -19,11 +19,12 @@ import lombok.extern.slf4j.Slf4j;
  * DAOインターセプター
  * 共通項目の設定と更新日時による楽観的ロック制御を行う。
  */
+
 @Slf4j
 @Aspect
 @Component
+@SuppressWarnings("unused")
 public class DaoInterceptor {
-
     @Around("target(application.dao.AbstractDao) && execution(public int insert(application.entity.AbstractEntity))")
     public Object setCommonFieldsForRegister(ProceedingJoinPoint jp) throws Throwable {
         AbstractEntity entity = (AbstractEntity) jp.getArgs()[0];

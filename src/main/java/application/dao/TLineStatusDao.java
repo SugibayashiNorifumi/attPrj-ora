@@ -2,8 +2,6 @@ package application.dao;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +15,8 @@ import ninja.cero.sqltemplate.core.SqlTemplate;
 @Component
 public class TLineStatusDao extends AbstractDao<TLineStatus> {
 
-    /** このクラスのロガー。 */
-    private static final Logger logger = LoggerFactory.getLogger(TLineStatusDao.class);
+    //    /** このクラスのロガー。 */
+    //    private static final Logger logger = LoggerFactory.getLogger(TLineStatusDao.class);
 
     /** DB操作用。 */
     @Autowired

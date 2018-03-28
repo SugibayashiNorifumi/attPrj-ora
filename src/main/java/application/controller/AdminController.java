@@ -47,10 +47,7 @@ import application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 管理者向け機能用 画面コントローラ.
- *
- * @author 作成者氏名
- *
+ * 管理者向け機能用 画面コントローラ。
  */
 @Slf4j
 @Controller
@@ -158,9 +155,9 @@ public class AdminController {
      */
     @RequestMapping(value = "/setting", method = RequestMethod.POST)
     public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
-                              BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()) {
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             return "admin/setting";
         }
 
@@ -350,7 +347,7 @@ public class AdminController {
      * @return ResponseEntity
      */
     private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
-        Map<String, List> errors = result.getFieldErrors().stream()
+        Map<String, List<Object>> errors = result.getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)),
                         (a, b) -> {
                             a.add(b);

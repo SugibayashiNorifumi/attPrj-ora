@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,8 +19,8 @@ import ninja.cero.sqltemplate.core.SqlTemplate;
  */
 @Component
 public class MUserDao extends AbstractDao<MUser> {
-
-    private static final Logger logger = LoggerFactory.getLogger(MUserDao.class);
+    //    /** このクラスのロガー。 */
+    //    private static final Logger logger = LoggerFactory.getLogger(MUserDao.class);
 
     @Autowired
     private SqlTemplate sqlTemplate;
