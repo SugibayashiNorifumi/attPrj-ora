@@ -13,12 +13,13 @@ import application.dao.MOrgDao;
 import application.entity.MOrg;
 
 /**
- * 組織サービス
+ * 組織サービス。
  */
 @Service
 @Transactional
 public class OrgService {
 
+    /** 組織マスタDAO。 */
     @Autowired
     private MOrgDao mOrgDao;
 
@@ -31,6 +32,10 @@ public class OrgService {
         return mOrgDao.findOrgs(name);
     }
 
+    /**
+     * 組織登録する。
+     * @param org 組織
+     */
     public void registerOrg(MOrg org) {
         AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         org.setRegistDate(LocalDateTime.now());

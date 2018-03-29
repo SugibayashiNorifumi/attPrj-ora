@@ -12,10 +12,7 @@ import application.entity.MOrg;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
- * 組織マスタDAO
- *
- * @author 作成者氏名
- *
+ * 組織マスタDAO。
  */
 @Component
 public class MOrgDao extends AbstractDao<MOrg> {
@@ -25,14 +22,13 @@ public class MOrgDao extends AbstractDao<MOrg> {
 
     /**
      * 指定条件で組織名を検索する。
-     *
      * @return エンティティリスト
      */
     public List<MOrg> findOrgs(String name) {
 
         Map<String, Object> cond = new HashMap<>();
 
-        if(!StringUtils.isEmpty(name)) {
+        if (!StringUtils.isEmpty(name)) {
             cond.put("likeName", "%" + name + "%");
         }
 
