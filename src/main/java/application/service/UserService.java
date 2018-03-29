@@ -45,7 +45,6 @@ public class UserService {
 
     /**
      * LINE IDを登録する。
-     *
      * @param userId 対象ユーザID
      * @param lineId LINE ID
      */
@@ -60,10 +59,8 @@ public class UserService {
 
     /**
      * ユーザ情報を検索する。
-     *
      * @param orgCd 所属組織コード
      * @param name 名前
-     *
      * @return ユーザ情報リスト
      */
     public List<UserInfoDto> findUsers(String orgCd, String name) {
@@ -72,7 +69,6 @@ public class UserService {
 
     /**
      * ユーザ情報を登録する。
-     *
      * @param user ユーザ情報
      */
     public void registerUser(MUser user) {

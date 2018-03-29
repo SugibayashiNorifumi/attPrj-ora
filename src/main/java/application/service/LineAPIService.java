@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public class LineAPIService {
     }
 
     @Autowired
-    private AttendanceService attendanceService;
+    private AttendanceMenuService attendanceMenuService;
 
     public AccessToken accessToken(String code) {
         return getClient(t -> t.accessToken(
@@ -225,10 +226,10 @@ public class LineAPIService {
         // メニュー操作判定
         MenuCd menuCd = MenuCd.getByLineMenuCd(text);
         if (menuCd != null) {
-            attendanceService.requestMenu(menuCd, evt, message);
+            attendanceMenuService.requestMenu(menuCd, evt, message);
         } else {
             // 文字列操作
-            attendanceService.requestText(text, evt, message);
+            attendanceMenuService.requestText(text, evt, message);
         }
     }
 
@@ -308,6 +309,8 @@ public class LineAPIService {
             if (actionList.size() >= 4) {
                 break;
             }
+            // 最大長にカット
+            buttonLabel = StringUtils.truncate(buttonLabel, 20);
             // アクション定義
             // ボタンタップで送信する内容
             Map<String, Object> backMap = new HashMap<>();

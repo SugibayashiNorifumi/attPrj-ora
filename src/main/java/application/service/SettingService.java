@@ -12,10 +12,7 @@ import application.emuns.DelFlag;
 import application.entity.MSetting;
 
 /**
- * 設定サービス
- *
- * @author 作成者名
- *
+ * 設定サービス。
  */
 @Service
 @Transactional
@@ -26,7 +23,6 @@ public class SettingService {
 
     /**
      * 設定マスタ情報を取得する。
-     *
      * @return 設定情報
      */
     public Optional<MSetting> getSetting() {

@@ -16,6 +16,7 @@ import application.entity.MOrg;
 @Transactional
 public class OrgService {
 
+    /** 組織マスタDAO。 */
     @Autowired
     private MOrgDao mOrgDao;
 

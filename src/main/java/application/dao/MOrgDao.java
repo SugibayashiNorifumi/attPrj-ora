@@ -22,14 +22,13 @@ public class MOrgDao extends AbstractDao<MOrg> {
 
     /**
      * 組織名から組織情報を検索する。
-     *
      * @return エンティティリスト
      */
     public List<MOrg> findOrgs(String name) {
 
         Map<String, Object> cond = new HashMap<>();
 
-        if(!StringUtils.isEmpty(name)) {
+        if (!StringUtils.isEmpty(name)) {
             cond.put("likeName", "%" + name + "%");
         }
 
