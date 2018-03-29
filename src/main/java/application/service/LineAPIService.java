@@ -85,7 +85,7 @@ public class LineAPIService {
     }
 
     @Autowired
-    private AttendanceService attendanceService;
+    private AttendanceMenuService attendanceMenuService;
 
     public AccessToken accessToken(String code) {
         return getClient(t -> t.accessToken(
@@ -225,10 +225,10 @@ public class LineAPIService {
         // メニュー操作判定
         MenuCd menuCd = MenuCd.getByLineMenuCd(text);
         if (menuCd != null) {
-            attendanceService.requestMenu(menuCd, evt, message);
+            attendanceMenuService.requestMenu(menuCd, evt, message);
         } else {
             // 文字列操作
-            attendanceService.requestText(text, evt, message);
+            attendanceMenuService.requestText(text, evt, message);
         }
     }
 
