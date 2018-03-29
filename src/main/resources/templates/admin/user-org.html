@@ -28,7 +28,7 @@
                     </div><!-- /.box-header -->
                     <div class="box-tools">
                         <div class="pull-left">
-                            <a class="btn btn-info" href="#" data-toggle="modal" data-target="#modal-org-form">
+                            <a class="btn btn-info" href="#" data-toggle="modal" onclick="openRegisterOrg()">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
@@ -116,12 +116,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="location" class="col-md-3 control-label">拠点</label>
-                                <div class="col-md-9">
-                                    <input id="location" type="text" class="form-control"  placeholder="拠点" name="location" maxlength="20" required="required"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="disp-seq" class="col-md-3 control-label">表示順</label>
                                 <div class="col-md-9">
                                     <input id="disp-seq" type="number" class="form-control"  placeholder="表示順" name="dispSeq"
@@ -130,6 +124,9 @@
                                            step="1"
                                            min="1"
                                            max="99"/>
+                                    <input id="org-regist-user-id" name="registUserId" type="hidden" />
+                                    <input id="org-regist-date" name="registDate" type="hidden" />
+                                    <input id="org-regist-func-cd" name="registFuncCd" type="hidden" />
                                 </div>
                             </div>
                         </form>
@@ -139,8 +136,10 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
                         </div>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-info"
+                            <button type="button" class="btn btn-info" id="org-register-button"
                                     onclick="handleRegisterOrg();">保存</button>
+                            <button type="button" class="btn btn-info" id="org-update-button"
+                                    onclick="handleUpdateOrg();">更新</button>
                         </div>
                     </div>
                 </div>
@@ -204,6 +203,9 @@
                                 <div class="col-md-9">
                                     <select id="auth-cd" name="authCd" class="select-auth form-control" style="width:30%"></select>
                                 </div>
+                                <input id="user-regist-user-id" name="registUserId" type="hidden" />
+                                <input id="user-regist-date" name="registDate" type="hidden" />
+                                <input id="user-regist-func-cd" name="registFuncCd" type="hidden" />
                             </div>
                         </form>
                     </div>
@@ -213,8 +215,10 @@
                         </div>
                         <div class="pull-right">
                             <span id="user-reg-msg"></span>
-                            <button type="button" class="btn btn-info"
+                            <button type="button" class="btn btn-info" id="user-register-button"
                                     onclick="handleRegisterUser();">保存</button>
+                            <button type="button" class="btn btn-info" id="user-update-button"
+                                    onclick="openUpdateUser();">更新</button>
                         </div>
                     </div>
                 </div>
@@ -242,7 +246,12 @@
                 {{:orgName}}
             </td>
             <td class="vert-align col-md-1">
-                <i class="fa fa-minus text-danger"></i>
+                <a class="btn btn-xs btn-info" onclick="openUpdateOrg('{{:orgCd}}')" href="#">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </td>
+            <td class="vert-align col-md-1">
+                <i class="fa fa-minus text-danger" onclick="deleteOrg('{{:orgCd}}')"></i>
             </td>
         </tr>
     </script>

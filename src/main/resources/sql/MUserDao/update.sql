@@ -9,4 +9,7 @@ update m_user
     <#if lineId??>
       ,line_id = :lineId
     </#if>
+    <#if lineId??>
+      ,del_flg = :delFlg
+    </#if>
 where user_id = :userId

@@ -32,6 +32,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import application.dto.DayAttendanceDto;
+import application.emuns.DelFlag;
 import application.entity.MOrg;
 import application.entity.MSetting;
 import application.entity.MUser;
@@ -93,7 +94,6 @@ public class AdminController {
      */
     @RequestMapping(value = "/user-org")
     public String getUserOrg(Model model) {
-        model.addAttribute("authList", divisionService.getAuthList());
         return "admin/user-org";
     }
 
@@ -113,6 +113,22 @@ public class AdminController {
     }
 
     /**
+     * 組織を取得する。
+     * @param orgCd 組織コード
+     * @return 組織情報
+     */
+    @RequestMapping(value = "/find-org", method = RequestMethod.GET)
+    public @ResponseBody Map<String, Object> findOrg(@RequestParam(required = false) String orgCd) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        res.put("results", orgService.findOrg(orgCd));
+
+        return res;
+    }
+
+
+    /**
      * ユーザ検索を実行する。
      *
      * @return ユーザ検索結果
@@ -128,7 +144,6 @@ public class AdminController {
     }
 
     /**
-     *
      * 設定画面を開く。
      *
      * @param settingForm 設定フォーム
@@ -155,9 +170,9 @@ public class AdminController {
      */
     @RequestMapping(value = "/setting", method = RequestMethod.POST)
     public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
             return "admin/setting";
         }
 
@@ -173,9 +188,9 @@ public class AdminController {
     /**
      * 組織を登録する。
      * @param orgForm 組織フォーム
-     * @return 組織一覧
+     * @return 登録結果
      */
-    @RequestMapping(value = "/orgs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/orgs", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm) {
 
@@ -189,6 +204,44 @@ public class AdminController {
 
         res.put("status", "OK");
 
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    /**
+     * 組織を更新する。
+     * @param orgCd 組織コード
+     * @return 削除結果
+     */
+    @RequestMapping(value = "/org-update", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateOrgs(OrgForm orgForm) {
+
+        log.debug("requested org form: {}", orgForm);
+
+        MOrg mOrg = modelMapper.map(orgForm, MOrg.class);
+        mOrg.setDelFlg(DelFlag.OFF.getVal());
+        orgService.updateOrg(mOrg);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "OK");
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    /**
+     * 組織を削除する。
+     * @param orgCd 組織コード
+     * @return 削除結果
+     */
+    @RequestMapping(value = "/org-delete", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteOrg(@RequestParam(value = "orgCd") String orgCd) {
+
+    	log.debug("deleteOrg: {}", orgCd);
+
+        orgService.deleteOrg(orgCd);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -319,7 +372,7 @@ public class AdminController {
 
         log.debug("attendanceCsv : {} :", listOutputForm);
 
-        // ユーザごとの1日分の勤怠情報(DayAttendance)を1行としたリストを取得し、CsvMapperでCSV化してリターン
+        // ユーザごとの1日分の勤怠情報(DayAttendanceDto)を1行としたリストを取得し、CsvMapperでCSV化してリターン
         CsvMapper mapper = new CsvMapper();
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -347,7 +400,7 @@ public class AdminController {
      * @return ResponseEntity
      */
     private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
-        Map<String, List<Object>> errors = result.getFieldErrors().stream()
+        Map<String, List> errors = result.getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)),
                         (a, b) -> {
                             a.add(b);

@@ -12,10 +12,7 @@ import application.entity.MOrg;
 import ninja.cero.sqltemplate.core.SqlTemplate;
 
 /**
- * 組織マスタDAO
- *
- * @author 作成者氏名
- *
+ * 組織マスタDAO。
  */
 @Component
 public class MOrgDao extends AbstractDao<MOrg> {
@@ -24,7 +21,7 @@ public class MOrgDao extends AbstractDao<MOrg> {
     private SqlTemplate sqlTemplate;
 
     /**
-     * 指定条件で組織名を検索する。
+     * 組織名から組織情報を検索する。
      *
      * @return エンティティリスト
      */
@@ -39,11 +36,30 @@ public class MOrgDao extends AbstractDao<MOrg> {
         return sqlTemplate.forList("sql/MOrgDao/findOrgs.sql", MOrg.class, cond);
     }
 
+    /**
+     * 組織コードから組織情報を検索する。
+     * @param orgCd 組織コード
+     * @return エンティティリスト
+     */
+    public MOrg findByOrgCd(String orgCd) {
+        return sqlTemplate.forObject("sql/MOrgDao/findByOrgCd.sql", MOrg.class, orgCd);
+    }
+
+    /**
+     * 組織を登録する。
+     * @param entity エンティティ
+     */
     public int insert(MOrg entity) {
+    	setInsertColumns(entity);
         return sqlTemplate.update("sql/MOrgDao/insert.sql", entity);
     }
 
+    /**
+     * 組織を更新する。
+     * @param entity エンティティ
+     */
     public int update(MOrg entity) {
+    	setUpdateColumns(entity);
         return sqlTemplate.update("sql/MOrgDao/update.sql", entity);
     }
 }

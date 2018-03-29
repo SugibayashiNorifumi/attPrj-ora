@@ -12,3 +12,8 @@ body {
 .clickable {
   cursor : pointer;
 }
+
+input[type="text"][readonly]{
+    background:#DCDCDC;
+    cursor:not-allowed;
+}

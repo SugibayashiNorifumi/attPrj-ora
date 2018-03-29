@@ -1,19 +1,16 @@
 package application.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import application.context.AdminUser;
 import application.dao.MOrgDao;
 import application.entity.MOrg;
 
 /**
- * 組織サービス
+ * 組織サービス。
  */
 @Service
 @Transactional
@@ -23,7 +20,7 @@ public class OrgService {
     private MOrgDao mOrgDao;
 
     /**
-     * 組織を検索する
+     * 組織を検索する。
      * @param name 名前
      * @return 組織情報リスト
      */
@@ -31,11 +28,36 @@ public class OrgService {
         return mOrgDao.findOrgs(name);
     }
 
+    /**
+     * 組織を取得する。
+     * @param orgCd 組織コード
+     */
+    public MOrg findOrg(String orgCd) {
+        return mOrgDao.findByOrgCd(orgCd);
+    }
+
+    /**
+     * 組織を登録する。
+     * @param org 組織データ
+     */
     public void registerOrg(MOrg org) {
-        AdminUser principal = (AdminUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        org.setRegistDate(LocalDateTime.now());
-        org.setRegistUserId(principal.getUser().getUserId());
-        org.setRegistFuncCd("0");
         mOrgDao.insert(org);
+    }
+
+    /**
+     * 組織を更新する。
+     * @param org 組織データ
+     */
+    public void updateOrg(MOrg org) {
+        mOrgDao.update(org);
+    }
+
+    /**
+     * 組織を削除する。
+     * @param orgCd 組織コード
+     */
+    public void deleteOrg(String orgCd) {
+        MOrg morg = mOrgDao.findByOrgCd(orgCd);
+        mOrgDao.delete(morg);
     }
 }

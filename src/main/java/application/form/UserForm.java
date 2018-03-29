@@ -1,5 +1,8 @@
 package application.form;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 /**
@@ -7,6 +10,8 @@ import lombok.Data;
  */
 @Data
 public class UserForm {
+	@NotNull
+	@Digits(integer = 6, fraction = 0)
     private Integer userId;
     private String password;
     private String name;
