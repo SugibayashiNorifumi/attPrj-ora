@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,29 +19,30 @@ import application.entity.TLineStatus;
 import application.utils.CommonUtils;
 
 /**
- * 勤怠情報「編集」操作サービス。
+ * 勤怠情報「修正」操作サービス。
  */
 @Service
 @Transactional
 public class AttendanceRewritingService extends AbstractAttendanceService {
-    //    /** このクラスのロガー。 */
-    //    private static final Logger logger = LoggerFactory.getLogger(AttendanceRewritingService.class);
+    /** このクラスのロガー。 */
+    private static final Logger logger = LoggerFactory.getLogger(AttendanceRewritingService.class);
 
     /** 勤怠情報DAO。 */
     @Autowired
     private TAttendanceDao tAttendanceDao;
 
     /**
-     * メニュー「編集」を開始する。
+     * メニュー「修正」を開始する。
      * @param replyToken リプライTOKEN
      */
     public void startRewriting(String replyToken) {
+        logger.debug("startRewriting() {}", replyToken);
         String msgRewriting = AppMesssageSource.getMessage("line.editMonthDate");
         LineAPIService.repryMessage(replyToken, msgRewriting);
     }
 
     /**
-     * メニュー「編集」の後続操作を処理する。
+     * メニュー「修正」の後続操作を処理する。
      * @param lineId LINE識別子
      * @param replyToken リプライTOKEN
      * @param lineStatus 前回のLINE操作
