@@ -32,10 +32,10 @@ security:
         enabled: false
 line:
     bot:
-        lineAtId: '@yre3479v'
-        channelToken: 1DX/VfQGybmkLY4UFqCJIuE+7Xinf0oE0VLPxweC+amWCrceAgLovodWUb6E1wUpBJAIWgIgBJ310rIBOv9SaqslbBHj9bpoXsSc+9aF9x/adRPaZZO8v1taWhsvAUqH3ZeqWBawHJhXtvgDb3Av+QdB04t89/1O/w1cDnyilFU=
-        channelSecret: 9920a6d632ce9aea6a0a8197fe08ecd3
+        lineAtId: '@fjp2603q'
+        channelToken: jjEAxDf5JSKXe3AOYwo/kaaQuXdmF35USypCTQIoM3dsRxRz9ao5Ek9FUsKjKlJ4g+Je+3AtuXdfIRuJDlURVyGLXNK8ZhNT1ra7Kxu+W5sVJg9oe4DvMsSgmmnySAqB6dpPRUlNQdW84OXwM+/ErQdB04t89/1O/w1cDnyilFU=
+        channelSecret: 59be071d3ca46f4bfb7c2aa7f79c4c2d
     linelogin:
-        channelId: 1569615261
-        channelSecret: 913e8b61eb86a723524e10cc8367cdd4
-        callbackUrl: https://85eed706.ngrok.io/user/auth
+        channelId: 1565512921
+        channelSecret: e6cc7c1964ef1f62b0aee3db28aa1a09
+        callbackUrl: https://469d3b1e.ngrok.io/user/auth

@@ -1,6 +1,5 @@
 package application.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import application.dao.MUserDao;
-import application.dto.UserInfoDto;
 import application.entity.MUser;
 
 /**
@@ -64,41 +62,5 @@ public class UserService {
             entity.setLineId(lineId);
             muserDao.update(entity);
         });
-    }
-
-    /**
-     * ユーザ情報を検索する。
-     * @param orgCd 所属組織コード
-     * @param name 名前
-     * @return ユーザ情報リスト
-     */
-    public List<UserInfoDto> findUsers(String orgCd, String name) {
-        return muserDao.findUsers(orgCd, name);
-    }
-
-    /**
-     * ユーザ情報を登録する。
-     * @param user ユーザ情報
-     */
-    public void registerUser(MUser user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        muserDao.insert(user);
-    }
-
-    /**
-     * ユーザを更新する。
-     * @param user ユーザデータ
-     */
-    public void updateUser(MUser user) {
-    	muserDao.update(user);
-    }
-
-    /**
-     * ユーザを削除する。
-     * @param userId ユーザID
-     */
-    public void deleteUser(Integer userId) {
-        MUser muser = muserDao.getByPk(userId);
-        muserDao.delete(muser);
     }
 }

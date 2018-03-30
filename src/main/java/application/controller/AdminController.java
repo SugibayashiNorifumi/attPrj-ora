@@ -27,15 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
-import application.dto.DayAttendanceDto;
-import application.emuns.DelFlag;
-import application.entity.MOrg;
 import application.entity.MSetting;
-import application.entity.MUser;
 import application.form.ListOutputForm;
 import application.form.OrgForm;
 import application.form.SettingForm;
@@ -105,11 +98,7 @@ public class AdminController {
     @RequestMapping(value = "/find-orgs", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findOrgs() {
 
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("results", orgService.findOrgs(null));
-
-        return res;
+        return null;
     }
 
     /**
@@ -120,11 +109,7 @@ public class AdminController {
     @RequestMapping(value = "/find-org", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findOrg(@RequestParam(required = true) String orgCd) {
 
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("results", orgService.findOrg(orgCd));
-
-        return res;
+        return null;
     }
 
 
@@ -136,11 +121,7 @@ public class AdminController {
     @RequestMapping(value = "/find-users", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findUsers(@RequestParam(required = false) String orgCd) {
 
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("results", userService.findUsers(orgCd, null));
-
-        return res;
+        return null;
     }
 
     /**
@@ -151,11 +132,7 @@ public class AdminController {
     @RequestMapping(value = "/find-user", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> findUser(@RequestParam(required = true) Integer userId) {
 
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("results", userService.getUserByUserId(userId));
-
-        return res;
+        return null;
     }
 
     /**
@@ -209,17 +186,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm) {
 
-        log.debug("requested org form: {}", orgForm);
-
-        MOrg mOrg = modelMapper.map(orgForm, MOrg.class);
-
-        orgService.registerOrg(mOrg);
-
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("status", "OK");
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -231,15 +198,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateOrgs(OrgForm orgForm) {
 
-        log.debug("requested org form: {}", orgForm);
-
-        MOrg mOrg = modelMapper.map(orgForm, MOrg.class);
-        mOrg.setDelFlg(DelFlag.OFF.getVal());
-        orgService.updateOrg(mOrg);
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "OK");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -251,13 +210,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteOrg(@RequestParam(value = "orgCd") String orgCd) {
 
-    	log.debug("deleteOrg: {}", orgCd);
-
-        orgService.deleteOrg(orgCd);
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "OK");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -271,21 +224,7 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
             BindingResult bindingResult) {
 
-        log.debug("requested user form: {}", userForm);
-
-        if (bindingResult.hasErrors()) {
-            return genValidationErrorResponse(bindingResult);
-        }
-
-        MUser mUser = modelMapper.map(userForm, MUser.class);
-
-        userService.registerUser(mUser);
-
-        Map<String, Object> res = new HashMap<>();
-
-        res.put("status", "OK");
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -297,15 +236,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateUser(UserForm userForm) {
 
-        log.debug("requested org form: {}", userForm);
-
-        MUser mUser = modelMapper.map(userForm, MUser.class);
-        mUser.setDelFlg(DelFlag.OFF.getVal());
-        userService.updateUser(mUser);
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "OK");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -317,15 +248,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteUser(@RequestParam(value = "userIds") List<String> userIds) {
 
-    	log.debug("deleteUser: {}", userIds);
-
-    	for (String userId : userIds) {
-    		userService.deleteUser(Integer.parseInt(userId));
-    	}
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "OK");
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return null;
     }
 
     /**
@@ -335,21 +258,7 @@ public class AdminController {
     @RequestMapping(value = "/orgs/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String name) {
 
-        log.debug("request param name: {}", name);
-
-        Map<String, Object> res = new HashMap<>();
-
-        List<Map<String, Object>> data = orgService.findOrgs(name).stream()
-                .map(org -> {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", org.getOrgCd());
-                    item.put("text", org.getOrgName());
-                    return item;
-                }).collect(Collectors.toList());
-
-        res.put("results", data);
-
-        return res;
+        return null;
     }
 
     /**
@@ -360,21 +269,7 @@ public class AdminController {
     public @ResponseBody Map<String, Object> getUserSelect2Data(@RequestParam(required = false) String orgCd,
             @RequestParam(required = false) String name) {
 
-        log.debug("request param name: {}", name);
-
-        Map<String, Object> res = new HashMap<>();
-
-        List<Map<String, Object>> data = userService.findUsers(orgCd, name).stream()
-                .map(user -> {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", user.getUserId());
-                    item.put("text", user.getName());
-                    return item;
-                }).collect(Collectors.toList());
-
-        res.put("results", data);
-
-        return res;
+        return null;
     }
 
     /**
@@ -383,19 +278,8 @@ public class AdminController {
      */
     @RequestMapping(value = "/auths/select2", method = RequestMethod.GET)
     public @ResponseBody Map<String, Object> getAuthSelect2Data() {
-        Map<String, Object> res = new HashMap<>();
 
-        List<Map<String, Object>> data = divisionService.getAuthList().stream()
-                .map(auth -> {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", auth.getDivCd());
-                    item.put("text", auth.getDivCdContent());
-                    return item;
-                }).collect(Collectors.toList());
-
-        res.put("results", data);
-
-        return res;
+    	return null;
     }
 
     /**
@@ -407,9 +291,7 @@ public class AdminController {
     @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
     public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
 
-        log.debug("listOutputForm : {} :", listOutputForm);
-
-        return "admin/listOutput";
+        return null;
     }
 
     /**
@@ -425,15 +307,7 @@ public class AdminController {
             BindingResult bindingResult,
             Model model) throws JsonProcessingException {
 
-        log.debug("attendanceCsv : {} :", listOutputForm);
-
-        // ユーザごとの1日分の勤怠情報(DayAttendanceDto)を1行としたリストを取得し、CsvMapperでCSV化してリターン
-        CsvMapper mapper = new CsvMapper();
-        mapper.findAndRegisterModules();
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        CsvSchema schema = mapper.schemaFor(DayAttendanceDto.class).withHeader();
-        return mapper.writer(schema)
-                .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.getOutputYearMonth()));
+        return null;
     }
 
     /**
