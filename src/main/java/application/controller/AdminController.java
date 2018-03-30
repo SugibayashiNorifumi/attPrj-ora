@@ -118,7 +118,7 @@ public class AdminController {
      * @return 組織情報
      */
     @RequestMapping(value = "/find-org", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> findOrg(@RequestParam(required = false) String orgCd) {
+    public @ResponseBody Map<String, Object> findOrg(@RequestParam(required = true) String orgCd) {
 
         Map<String, Object> res = new HashMap<>();
 
@@ -139,6 +139,21 @@ public class AdminController {
         Map<String, Object> res = new HashMap<>();
 
         res.put("results", userService.findUsers(orgCd, null));
+
+        return res;
+    }
+
+    /**
+     * ユーザを取得する。
+     * @param userId ユーザID
+     * @return 組織情報
+     */
+    @RequestMapping(value = "/find-user", method = RequestMethod.GET)
+    public @ResponseBody Map<String, Object> findUser(@RequestParam(required = true) Integer userId) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        res.put("results", userService.getUserByUserId(userId));
 
         return res;
     }
@@ -209,8 +224,8 @@ public class AdminController {
 
     /**
      * 組織を更新する。
-     * @param orgCd 組織コード
-     * @return 削除結果
+     * @param orgForm 組織フォーム
+     * @return 更新結果
      */
     @RequestMapping(value = "/org-update", method = RequestMethod.POST)
     @ResponseBody
@@ -270,6 +285,46 @@ public class AdminController {
 
         res.put("status", "OK");
 
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    /**
+     * ユーザを更新する。
+     * @param userForm ユーザフォーム
+     * @return 更新結果
+     */
+    @RequestMapping(value = "/user-update", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateUser(UserForm userForm) {
+
+        log.debug("requested org form: {}", userForm);
+
+        MUser mUser = modelMapper.map(userForm, MUser.class);
+        mUser.setDelFlg(DelFlag.OFF.getVal());
+        userService.updateUser(mUser);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "OK");
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    /**
+     * ユーザを削除する。
+     * @param userIds ユーザID
+     * @return 削除結果
+     */
+    @RequestMapping(value = "/user-delete", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteUser(@RequestParam(value = "userIds") List<String> userIds) {
+
+    	log.debug("deleteUser: {}", userIds);
+
+    	for (String userId : userIds) {
+    		userService.deleteUser(Integer.parseInt(userId));
+    	}
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

@@ -167,6 +167,14 @@ function deleteOrg(orgCd) {
     }
 }
 
+function openRegisterUser() {
+    var $form = $('#modal-user-form');
+    $form.modal('show');
+    $('#user-register-button').show();
+    $('#user-update-button').hide();
+    $form.find('#user-id').attr('readonly', false);
+}
+
 function handleRegisterUser() {
    confirmBeforeSubmit("user-register-form", "登録しますか？", registerUser);
 }
@@ -191,6 +199,83 @@ function registerUser() {
               removeLoading(formId);
               alert("登録に失敗しました");
           });
+}
+
+function openUpdateUser(userId) {
+    var $form = $('#modal-user-form');
+    $form.find('#user-id').attr('readonly', true);
+    $.ajax({
+          url: '/admin/find-user',
+          method: 'GET',
+          data: {
+	          userId: userId
+	      }
+	      }).done(function(res) {
+	          $form.find('#user-id').val(res.results.userId);
+	          $form.find('#name').val(res.results.name);
+	          $form.find('#mail').val(res.results.mail);
+	          $form.find('#user-org-cd').val(res.results.orgCd).trigger("change");
+	          $form.find('#manager-id').val(res.results.managerId).trigger("change");
+	          $form.find('#auth-cd').val(res.results.orgCd).trigger("change");
+	          $form.find('#user-regist-user-id').val(res.results.registUserId);
+	          $form.find('#user-regist-date').val(res.results.registDate);
+	          $form.find('#user-regist-func-cd').val(res.results.registFuncCd);
+	          $form.modal('show');
+	          $('#user-register-button').hide();
+	          $('#user-update-button').show();
+	      }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+	          removeLoading(formId);
+	          alert("通信エラーが発生しました");
+	          $form.modal('show');
+          });
+}
+
+function handleUpdateUser() {
+    confirmBeforeSubmit("user-register-form", "更新しますか？", updateUser);
+}
+
+function updateUser() {
+	   var formId = "user-register-form";
+
+	   loading(formId);
+
+	   $form = $("#" + formId);
+
+	   $.ajax( {
+	          url: '/admin/user-update',
+	          method: 'POST',
+	          data: $form.serialize()
+	          }).done(function(res) {
+	             removeLoading(formId);
+	             alert("更新しました");
+	             $form.modal('hide');
+	             $('#user-register-button').show();
+	             $('#user-update-button').hide();
+	             findUser($(this).data("org-cd"));
+	             $('#modal-user-form').modal('hide');
+	          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+	             removeLoading(formId);
+	             alert("更新に失敗しました");
+	          });
+}
+
+function deleteUsers() {
+    if (confirm("削除しますか？")) {
+       var formId = "user-delete-form";
+       loading(formId);
+       $form = $("#" + formId);
+       $.ajax( {
+            url: '/admin/org-delete',
+            method: 'POST',
+            data: $('input[name=userIds]:checked').serialize()
+            }).done(function(res) {
+                alert("削除しました");
+                removeLoading(formId);
+                findUser($(this).data("org-cd"));
+            }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("削除に失敗しました");
+            });
+    }
 }
 
 $(function() {

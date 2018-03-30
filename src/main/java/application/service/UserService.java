@@ -26,6 +26,15 @@ public class UserService {
     MUserDao muserDao;
 
     /**
+     * ユーザIDをもとにユーザを取得する。
+     * @param userId ユーザID
+     * @return ユーザ情報
+     */
+    public MUser getUserByUserId(Integer userId) {
+        return muserDao.getByPk(userId);
+    }
+
+    /**
      * メールアドレスをもとにユーザを取得する。
      * @param mail メールアドレス
      * @return ユーザ情報
@@ -74,5 +83,22 @@ public class UserService {
     public void registerUser(MUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         muserDao.insert(user);
+    }
+
+    /**
+     * ユーザを更新する。
+     * @param user ユーザデータ
+     */
+    public void updateUser(MUser user) {
+    	muserDao.update(user);
+    }
+
+    /**
+     * ユーザを削除する。
+     * @param userId ユーザID
+     */
+    public void deleteUser(Integer userId) {
+        MUser muser = muserDao.getByPk(userId);
+        muserDao.delete(muser);
     }
 }

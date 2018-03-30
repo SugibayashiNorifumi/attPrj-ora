@@ -57,32 +57,32 @@
                     </div><!-- /.box-header -->
                     <div class="box-tools">
                         <div class="pull-left">
-                            <a class="btn btn-danger" href="#">
+                            <a class="btn btn-danger" href="#" onclick="deleteUsers()">
                                 <i class="fa fa-trash"></i>
                             </a>
-                            <a class="btn btn-info" href="#" data-toggle="modal" data-target="#modal-user-form">
+                            <a class="btn btn-info" href="#" data-toggle="modal" onclick="openRegisterUser()">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
                     </div><!-- /.box-tools -->
-                    <div class="box-body no-padding">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                            <tr>
-                                <td><input type="checkbox" /></td>
-                                <td>ユーザID</td>
-                                <td>権限</td>
-                                <td>組織</td>
-                                <td>名前</td>
-                                <td>メール</td>
-                                <td>修正</td>
-                            </tr>
-                            </thead>
-                            <tbody id="user-list" >
+	                    <div class="box-body no-padding">
+	                        <table class="table table-hover table-bordered">
+	                            <thead>
+	                            <tr>
+	                                <td><input type="checkbox" /></td>
+	                                <td>ユーザID</td>
+	                                <td>権限</td>
+	                                <td>組織</td>
+	                                <td>名前</td>
+	                                <td>メール</td>
+	                                <td>修正</td>
+	                            </tr>
+	                            </thead>
+	                            <tbody id="user-list" >
 
-                            </tbody>
-                        </table>
-                    </div>
+	                            </tbody>
+	                        </table>
+	                    </div>
                 </div>
             </div>
         </div>
@@ -218,7 +218,7 @@
                             <button type="button" class="btn btn-info" id="user-register-button"
                                     onclick="handleRegisterUser();">保存</button>
                             <button type="button" class="btn btn-info" id="user-update-button"
-                                    onclick="openUpdateUser();">更新</button>
+                                    onclick="handleUpdateUser();">更新</button>
                         </div>
                     </div>
                 </div>
@@ -259,7 +259,7 @@
     <script id="user-record-tmpl" type="text/x-jsrender">
         <tr>
             <td class="vert-align col-md-1">
-                <input type="checkbox" value="{{:userId}}"/>
+                <input type="checkbox" name="userIds" value="{{:userId}}"/>
             </td>
             <td class="vert-align col-md-2">
                 {{:userId}}
@@ -277,7 +277,7 @@
                 {{:mail}}
             </td>
             <td class="vert-align col-md-1">
-                <a class="btn btn-xs btn-info" data-user-id="{{:userId}}" href="#">
+                <a class="btn btn-xs btn-info" href="#" onclick="openUpdateUser({{:userId}})">
                     <i class="fa fa-pencil"></i>
                 </a>
             </td>
