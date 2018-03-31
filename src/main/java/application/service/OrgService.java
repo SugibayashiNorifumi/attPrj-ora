@@ -1,6 +1,7 @@
 package application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,8 @@ public class OrgService {
      * 組織を取得する。
      * @param orgCd 組織コード
      */
-    public MOrg findOrg(String orgCd) {
-        return mOrgDao.findByOrgCd(orgCd);
+    public Optional<MOrg> findOrg(String orgCd) {
+        return Optional.ofNullable(mOrgDao.findByOrgCd(orgCd));
     }
 
     /**

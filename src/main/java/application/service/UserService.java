@@ -30,8 +30,8 @@ public class UserService {
      * @param userId ユーザID
      * @return ユーザ情報
      */
-    public MUser getUserByUserId(Integer userId) {
-        return muserDao.getByPk(userId);
+    public Optional<MUser> getUserByUserId(Integer userId) {
+        return Optional.ofNullable(muserDao.getByPk(userId));
     }
 
     /**
@@ -62,7 +62,7 @@ public class UserService {
             MUser entity = new MUser();
             entity.setUserId(userId);
             entity.setLineId(lineId);
-            muserDao.update(entity);
+            muserDao.updateAsNullIsExclude(entity);
         });
     }
 
@@ -90,7 +90,8 @@ public class UserService {
      * @param user ユーザデータ
      */
     public void updateUser(MUser user) {
-    	muserDao.update(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        muserDao.update(user);
     }
 
     /**

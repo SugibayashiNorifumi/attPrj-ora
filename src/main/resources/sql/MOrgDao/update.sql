@@ -3,8 +3,8 @@ UPDATE m_org
        org_name = :orgName
       ,location = :location
       ,disp_seq = :dispSeq
-      ,regist_date = :registDate
-      ,regist_user_id = :registUserId
-      ,regist_func_cd = :registFuncCd
+      ,update_date = :updateDate
+      ,update_user_id = :updateUserId
+      ,update_func_cd = :updateFuncCd
       ,del_flg = :delFlg
 WHERE org_cd = :orgCd

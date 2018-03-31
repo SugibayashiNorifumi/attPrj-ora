@@ -11,4 +11,7 @@ LEFT JOIN m_div_details dd
     <#if orgCd??>
       AND u.org_cd = :orgCd
     </#if>
+    <#if likeName??>
+      AND u.name like :likeName
+    </#if>
  ORDER BY u.user_id

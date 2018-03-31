@@ -1,3 +1,9 @@
+/** 選択中の組織コード */
+var selectedOrgCd = '';
+
+/**
+ * 組織を検索する。
+ */
 function findOrg() {
     var formId = 'org-list';
 
@@ -28,6 +34,10 @@ function findOrg() {
           });
 }
 
+/**
+ * ユーザを検索する。
+ * @param targetOrgCd 対象組織コード
+ */
 function findUser(targetOrgCd) {
     var formId = 'user-list';
 
@@ -40,10 +50,11 @@ function findUser(targetOrgCd) {
               orgCd: targetOrgCd
           }
           }).done(function(res) {
-
+        	  selectedOrgCd = targetOrgCd;
               removeLoading(formId);
 
               $('#user-list').empty();
+              $('#userAllCheck').prop('selected', false);
 
              if(res.results.length > 0) {
                   var tmpl = $.templates('#user-record-tmpl');
@@ -61,6 +72,9 @@ function findUser(targetOrgCd) {
           });
 }
 
+/**
+ * 組織登録ダイアログを表示する。
+ */
 function openRegisterOrg() {
     var $form = $('#modal-org-form');
     $form.modal('show');
@@ -69,65 +83,16 @@ function openRegisterOrg() {
     $form.find('#org-cd').attr('readonly', false);
 }
 
-function openUpdateOrg(orgCd) {
-    var $form = $('#modal-org-form');
-    $form.find('#org-cd').attr('readonly', true);
-    $.ajax({
-          url: '/admin/find-org',
-          method: 'GET',
-          data: {
-	          orgCd: orgCd
-	      }
-	      }).done(function(res) {
-	          $form.find('#org-cd').val(res.results.orgCd);
-	          $form.find('#org-name').val(res.results.orgName);
-	          $form.find('#disp-seq').val(res.results.dispSeq);
-	          $form.find('#org-regist-user-id').val(res.results.registUserId);
-	          $form.find('#org-regist-date').val(res.results.registDate);
-	          $form.find('#org-regist-func-cd').val(res.results.registFuncCd);
-	          $form.modal('show');
-	          $('#org-register-button').hide();
-	          $('#org-update-button').show();
-	      }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-	          removeLoading(formId);
-	          alert("通信エラーが発生しました");
-	          $form.modal('show');
-          });
-}
-
-function handleUpdateOrg() {
-    confirmBeforeSubmit("org-register-form", "更新しますか？", updateOrg);
-}
-
-function updateOrg() {
-	   var formId = "org-register-form";
-
-	   loading(formId);
-
-	   $form = $("#" + formId);
-
-	   $.ajax( {
-	          url: '/admin/org-update',
-	          method: 'POST',
-	          data: $form.serialize()
-	          }).done(function(res) {
-	             removeLoading(formId);
-	             alert("更新しました");
-	             $form.modal('hide');
-	             $('#org-register-button').show();
-	             $('#org-update-button').hide();
-	             findOrg();
-	             $('#modal-org-form').modal('hide');
-	          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-	             removeLoading(formId);
-	             alert("更新に失敗しました");
-	          });
-}
-
+/**
+ * 組織の登録ボタン押下時の動作。
+ */
 function handleRegisterOrg() {
     confirmBeforeSubmit("org-register-form", "登録しますか？", registerOrg);
 }
 
+/**
+ * 組織登録処理実行。
+ */
 function registerOrg() {
    var formId = "org-register-form";
 
@@ -141,32 +106,105 @@ function registerOrg() {
           data: $form.serialize()
           }).done(function(res) {
               removeLoading(formId);
-              alert("登録しました");
+              showInfoMessage("登録しました");
 	          findOrg();
               $('#modal-org-form').modal('hide');
           }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
               removeLoading(formId);
-              alert("登録に失敗しました");
+              showInfoMessage("登録に失敗しました");
           });
 }
 
-function deleteOrg(orgCd) {
-    if (confirm("削除しますか？")) {
-        $.ajax( {
-            url: '/admin/org-delete',
-            method: 'POST',
-            data: {
-                orgCd: orgCd
-            }
-            }).done(function(res) {
-                alert("削除しました");
-                findOrg();
-            }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("削除に失敗しました");
-            });
-    }
+/**
+ * 組織更新ダイアログを表示する。
+ */
+function openUpdateOrg(orgCd) {
+    var $form = $('#modal-org-form');
+    $form.find('#org-cd').attr('readonly', true);
+    $.ajax({
+          url: '/admin/find-org',
+          method: 'GET',
+          data: {
+	          orgCd: orgCd
+	      }
+	      }).done(function(res) {
+	          $form.find('#org-cd').val(res.results.orgCd);
+	          $form.find('#org-name').val(res.results.orgName);
+	          $form.find('#disp-seq').val(res.results.dispSeq);
+	          $form.modal('show');
+	          $('#org-register-button').hide();
+	          $('#org-update-button').show();
+	      }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+	          removeLoading(formId);
+	          showInfoMessage("通信エラーが発生しました");
+	          $form.modal('show');
+          });
 }
 
+/**
+ * 組織の更新ボタン押下時の動作。
+ */
+function handleUpdateOrg() {
+    confirmBeforeSubmit("org-register-form", "更新しますか？", updateOrg);
+}
+
+/**
+ * 組織更新処理実行
+ */
+function updateOrg() {
+	   var formId = "org-register-form";
+
+	   loading(formId);
+
+	   $form = $("#" + formId);
+
+	   $.ajax( {
+	          url: '/admin/org-update',
+	          method: 'POST',
+	          data: $form.serialize()
+	          }).done(function(res) {
+	             removeLoading(formId);
+	             showInfoMessage("更新しました");
+	             $('#org-register-button').show();
+	             $('#org-update-button').hide();
+	             findOrg();
+	             $('#modal-org-form').modal('hide');
+	          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+	             removeLoading(formId);
+	             showInfoMessage("更新に失敗しました");
+	          });
+}
+
+/**
+ * 組織の削除処理ボタン押下時の動作。
+ */
+function handleDeleteOrg(orgCd) {
+	selectedOrgCd = orgCd;
+	confirmBeforeSubmit("dummy", "削除しますか？", deleteOrg);
+}
+
+/**
+ * 組織削除処理実行
+ * @param targetOrgCd 対象の組織コード
+ */
+function deleteOrg() {
+    $.ajax( {
+        url: '/admin/org-delete',
+        method: 'POST',
+        data: {
+            orgCd: selectedOrgCd
+        }
+        }).done(function(res) {
+            showInfoMessage("削除しました");
+            findOrg();
+        }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+            showInfoMessage("削除に失敗しました");
+        });
+}
+
+/**
+ * ユーザ登録ダイアログを開く。
+ */
 function openRegisterUser() {
     var $form = $('#modal-user-form');
     $form.modal('show');
@@ -175,10 +213,17 @@ function openRegisterUser() {
     $form.find('#user-id').attr('readonly', false);
 }
 
+/**
+ * ユーザ登録ボタン押下時の動作。
+ * @returns
+ */
 function handleRegisterUser() {
    confirmBeforeSubmit("user-register-form", "登録しますか？", registerUser);
 }
 
+/**
+ * ユーザ登録処理実行。
+ */
 function registerUser() {
    var formId = "user-register-form";
 
@@ -192,48 +237,58 @@ function registerUser() {
           data: $form.serialize()
           }).done(function(res) {
               removeLoading(formId);
-              alert("登録しました");
-              $form.modal('hide');
-	          findUser();
+              showInfoMessage("登録しました");
+	          findUser(selectedOrgCd);
+              $('#modal-user-form').modal('hide');
           }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
               removeLoading(formId);
-              alert("登録に失敗しました");
+              showInfoMessage("登録に失敗しました");
           });
 }
 
-function openUpdateUser(userId) {
+/**
+ * ユーザ更新ダイアログを開く。
+ * @param targetUserId 対象ユーザID
+ */
+function openUpdateUser(targetUserId) {
     var $form = $('#modal-user-form');
     $form.find('#user-id').attr('readonly', true);
     $.ajax({
           url: '/admin/find-user',
           method: 'GET',
           data: {
-	          userId: userId
+	          userId: targetUserId
 	      }
 	      }).done(function(res) {
 	          $form.find('#user-id').val(res.results.userId);
 	          $form.find('#name').val(res.results.name);
 	          $form.find('#mail').val(res.results.mail);
-	          $form.find('#user-org-cd').val(res.results.orgCd).trigger("change");
-	          $form.find('#manager-id').val(res.results.managerId).trigger("change");
-	          $form.find('#auth-cd').val(res.results.orgCd).trigger("change");
-	          $form.find('#user-regist-user-id').val(res.results.registUserId);
-	          $form.find('#user-regist-date').val(res.results.registDate);
-	          $form.find('#user-regist-func-cd').val(res.results.registFuncCd);
+	          $form.find('#line-id').val(res.results.lineId);
+	          // optionタグを挿入しているのは、外部からSelect2に値を設定する際に必要なため
+	          $form.find('#user-org-cd').append('<option value="' + res.results.orgCd + '" selected="selected">' + res.orgName + '</option>').change();
+	          $form.find('#auth-cd').append('<option value="' + res.results.authCd + '" selected="selected">' + res.authName + '</option>').change();
+	          if (res.results.managerId != null) {
+	        	  $form.find('#manager-id').append('<option value="' + res.results.managerId + '" selected="selected">' + res.managerName + '</option>').change();
+	          }
 	          $form.modal('show');
 	          $('#user-register-button').hide();
 	          $('#user-update-button').show();
 	      }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-	          removeLoading(formId);
-	          alert("通信エラーが発生しました");
+	          showInfoMessage("通信エラーが発生しました");
 	          $form.modal('show');
           });
 }
 
+/**
+ * ユーザ更新ボタン押下時の動作。
+ */
 function handleUpdateUser() {
     confirmBeforeSubmit("user-register-form", "更新しますか？", updateUser);
 }
 
+/**
+ * ユーザを更新する。
+ */
 function updateUser() {
 	   var formId = "user-register-form";
 
@@ -247,38 +302,64 @@ function updateUser() {
 	          data: $form.serialize()
 	          }).done(function(res) {
 	             removeLoading(formId);
-	             alert("更新しました");
-	             $form.modal('hide');
+	             showInfoMessage("更新しました");
 	             $('#user-register-button').show();
 	             $('#user-update-button').hide();
-	             findUser($(this).data("org-cd"));
+	             findUser(selectedOrgCd);
 	             $('#modal-user-form').modal('hide');
 	          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
 	             removeLoading(formId);
-	             alert("更新に失敗しました");
+	             showInfoMessage("更新に失敗しました");
 	          });
 }
 
-function deleteUsers() {
-    if (confirm("削除しますか？")) {
-       var formId = "user-delete-form";
-       loading(formId);
-       $form = $("#" + formId);
-       $.ajax( {
-            url: '/admin/org-delete',
-            method: 'POST',
-            data: $('input[name=userIds]:checked').serialize()
-            }).done(function(res) {
-                alert("削除しました");
-                removeLoading(formId);
-                findUser($(this).data("org-cd"));
-            }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("削除に失敗しました");
-            });
-    }
+/**
+ * ユーザ削除ボタンを押下した時の動作。
+ */
+function handleDeleteUsers() {
+	if ($('.checkUser:checked').length > 0) {
+	    confirmBeforeSubmit("user-delete-form", "選択したユーザを削除しますか？", deleteUsers);
+	} else {
+		showInfoMessage("ユーザを選択してください");
+	}
 }
 
+/**
+ * ユーザを削除する。
+ */
+function deleteUsers() {
+   var formId = "user-delete-form";
+   loading(formId);
+   $form = $("#" + formId);
+   $.ajax( {
+        url: '/admin/user-delete',
+        method: 'POST',
+        data: $('.checkUser:checked').serialize()
+        }).done(function(res) {
+            showInfoMessage("削除しました");
+            removeLoading(formId);
+            findUser(selectedOrgCd);
+        }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+            showInfoMessage("削除に失敗しました");
+        });
+}
+
+/**
+ * ユーザ全選択ボタン押下時の動作。
+ */
+function onUserAllSelecting() {
+	if ($('#userAllCheck:checked').length > 0) {
+		$('.checkUser').prop('checked', true);
+	} else {
+		$('.checkUser').prop('checked', false);
+	}
+}
+
+/**
+ * 初期化処理
+ */
 $(function() {
+	function format(item) { return item.text; };
 
     findOrg();
 
@@ -291,25 +372,51 @@ $(function() {
         $(event.target).find('select').val('').trigger('change');
     });
 
-    $('.select-org').select2({
+    // selectを高機能化するjQueryのプラグイン"Select2"の適用
+    $('#user-org-cd').select2({
         ajax: {
             url: '/admin/orgs/select2',
-            dataType: "json"
-        }
-    });
+            dataType: "json",
+            delay: 250
+        }});
 
-    $('.select-user').select2({
+    $('#manager-id').select2({
         ajax: {
             url: '/admin/users/select2',
-            dataType: "json"
-        }
+            dataType: "json",
+            delay: 250,
+            data: function (params) {
+              var query = {
+                orgCd: $('#user-org-cd').val(),
+                name: params.term
+              }
+              return query;
+            }
+        },
+        allowClear: true, // 未選択可能
+        placeholder: ""   // allowClearによる未選択動作時に必要
     });
 
-    $('.select-auth').select2({
+    $('#auth-cd').select2({
         ajax: {
             url: '/admin/auths/select2',
             dataType: "json"
-        }
+        },
+        minimumResultsForSearch: 100 // 検索枠を表示させないようにするために設定
     });
+
+//    $('#modal-org-form').bootstrapValidator({
+//        live: 'enabled',
+//        fields: {
+//        	orgCd: {
+//                validators: {
+//                    notEmpty: { message: '組織コードは必須です' }
+//                }
+//            }
+//        }
+//    });
+//    $('#org-register-button').click(function() {
+//        $('#modal-org-form').bootstrapValidator('validate');
+//    });
 
 });

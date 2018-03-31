@@ -32,11 +32,10 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import application.dto.DayAttendanceDto;
-import application.emuns.DelFlag;
+import application.entity.MDivDetail;
 import application.entity.MOrg;
 import application.entity.MSetting;
 import application.entity.MUser;
-import application.form.ListOutputForm;
 import application.form.OrgForm;
 import application.form.SettingForm;
 import application.form.UserForm;
@@ -55,32 +54,48 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
+    /** パスワードエンコーダー。 */
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /** モデルマッパー。*/
     @Autowired
     private ModelMapper modelMapper;
 
+    /** ユーザサービス。*/
     @Autowired
     private UserService userService;
 
+    /** 組織サービス。*/
     @Autowired
     private OrgService orgService;
 
+    /** 区分サービス。*/
     @Autowired
     private DivisionService divisionService;
 
+    /** 設定サービス。*/
     @Autowired
     private SettingService settingService;
 
+    /** リスト出力サービス。*/
     @Autowired
     private ListOutputService listOutputService;
 
+    /**
+     * ログイン画面を表示する。
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model) {
+    public String login() {
         return "admin/login";
     }
 
+    /**
+     * ログインエラーを返す。
+     * @param model モデル
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login-error", method = RequestMethod.GET)
     public String loginError(Model model) {
         model.addAttribute("loginFailedErrorMsg", "ユーザIDまたはパスワードが正しくありません。");
@@ -90,7 +105,7 @@ public class AdminController {
     /**
      * ユーザ・組織管理画面表示.
      *
-     * @return 画面のパス
+     * @return ユーザ・組織管理画面
      */
     @RequestMapping(value = "/user-org")
     public String getUserOrg(Model model) {
@@ -122,7 +137,7 @@ public class AdminController {
 
         Map<String, Object> res = new HashMap<>();
 
-        res.put("results", orgService.findOrg(orgCd));
+        res.put("results", orgService.findOrg(orgCd).orElseGet(() -> new MOrg()));
 
         return res;
     }
@@ -152,9 +167,13 @@ public class AdminController {
     public @ResponseBody Map<String, Object> findUser(@RequestParam(required = true) Integer userId) {
 
         Map<String, Object> res = new HashMap<>();
-
-        res.put("results", userService.getUserByUserId(userId));
-
+        // ユーザ情報を取得する
+        MUser user = userService.getUserByUserId(userId).orElseGet(() -> new MUser());
+        res.put("results", user);
+        // 組織名、上司名、権限名はユーザエンティティに含まれないため別途取得する
+        res.put("orgName", orgService.findOrg(user.getOrgCd()).orElseGet(() -> new MOrg()).getOrgName());
+        res.put("managerName", userService.getUserByUserId(user.getManagerId()).orElseGet(() -> new MUser()).getName());
+        res.put("authName", divisionService.getAuth(user.getAuthCd()).orElseGet(() -> new MDivDetail()).getDivCdContent());
         return res;
     }
 
@@ -162,14 +181,15 @@ public class AdminController {
      * 設定画面を開く。
      *
      * @param settingForm 設定フォーム
-     * @return 画面のパス
+     * @return 設定画面
      */
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
     public String setting(@ModelAttribute SettingForm settingForm) {
 
+        // 設定を読み込む。すでに設定しているものがなければ生成する。
         MSetting mSetting = settingService.getSetting().orElse(new MSetting());
 
-        modelMapper.map(mSetting, settingForm);
+        modelMapper.map(mSetting, settingForm); // エンティティからフォームにマッピングする
 
         log.debug("settingForm : {} :", settingForm);
 
@@ -187,56 +207,72 @@ public class AdminController {
     public String saveSetting(@ModelAttribute @Valid SettingForm settingForm,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
+        log.debug("requested setting form: {}", settingForm);
+
         if(bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを返す
             return "admin/setting";
         }
 
-        MSetting setting = modelMapper.map(settingForm, MSetting.class);
+        MSetting setting = modelMapper.map(settingForm, MSetting.class); // フォームクラスからエンティティクラスにマッピングする
+        settingService.registerSetting(setting); // 登録処理を実行
 
-        settingService.registerSetting(setting);
-
+        // 処理成功を返す
         redirectAttributes.addFlashAttribute("updateSuccessMsg", "保存が完了しました");
-
         return "redirect:/admin/setting";
     }
 
     /**
      * 組織を登録する。
      * @param orgForm 組織フォーム
+     * @param bindingResult バインド結果
      * @return 登録結果
      */
     @RequestMapping(value = "/orgs", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> registerOrg(OrgForm orgForm) {
-
+    public ResponseEntity<Map<String, Object>> registerOrg(@Valid @ModelAttribute OrgForm orgForm,
+            BindingResult bindingResult) {
         log.debug("requested org form: {}", orgForm);
 
-        MOrg mOrg = modelMapper.map(orgForm, MOrg.class);
+        if (bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを伝える
+            return genValidationErrorResponse(bindingResult);
+        }
 
-        orgService.registerOrg(mOrg);
+        MOrg mOrg = modelMapper.map(orgForm, MOrg.class); // フォームクラスからエンティティクラスにマッピングする
+        orgService.registerOrg(mOrg); // 登録処理を呼び出す
 
+        // 処理成功を返す
         Map<String, Object> res = new HashMap<>();
-
         res.put("status", "OK");
-
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /**
      * 組織を更新する。
      * @param orgForm 組織フォーム
+     * @param bindingResult バインド結果
      * @return 更新結果
      */
     @RequestMapping(value = "/org-update", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateOrgs(OrgForm orgForm) {
+    public ResponseEntity<Map<String, Object>> updateOrgs(@Valid @ModelAttribute OrgForm orgForm,
+            BindingResult bindingResult) {
 
         log.debug("requested org form: {}", orgForm);
 
-        MOrg mOrg = modelMapper.map(orgForm, MOrg.class);
-        mOrg.setDelFlg(DelFlag.OFF.getVal());
-        orgService.updateOrg(mOrg);
+        if (bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを伝える
+            return genValidationErrorResponse(bindingResult);
+        }
 
+        MOrg mOrg = modelMapper.map(orgForm, MOrg.class); // フォームからエンティティにマッピングする
+        orgService.updateOrg(mOrg); // 削除処理を実行する
+
+        // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
         res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -251,10 +287,12 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteOrg(@RequestParam(value = "orgCd") String orgCd) {
 
-    	log.debug("deleteOrg: {}", orgCd);
+        log.debug("deleteOrg: {}", orgCd);
 
+        // 削除処理を呼び出す
         orgService.deleteOrg(orgCd);
 
+        // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
         res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -268,41 +306,51 @@ public class AdminController {
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
+    public ResponseEntity<Map<String, Object>> registerUser(@Valid @ModelAttribute UserForm userForm,
             BindingResult bindingResult) {
 
         log.debug("requested user form: {}", userForm);
 
         if (bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを伝える
             return genValidationErrorResponse(bindingResult);
         }
 
         MUser mUser = modelMapper.map(userForm, MUser.class);
-
         userService.registerUser(mUser);
 
+        // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
-
         res.put("status", "OK");
-
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /**
      * ユーザを更新する。
      * @param userForm ユーザフォーム
+     * @param bindingResult バインド結果
      * @return 更新結果
      */
     @RequestMapping(value = "/user-update", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateUser(UserForm userForm) {
+    public ResponseEntity<Map<String, Object>> updateUser(@Valid @ModelAttribute UserForm userForm,
+            BindingResult bindingResult) {
 
-        log.debug("requested org form: {}", userForm);
+        log.debug("requested user form: {}", userForm);
+
+        if (bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを伝える
+            return genValidationErrorResponse(bindingResult);
+        }
 
         MUser mUser = modelMapper.map(userForm, MUser.class);
-        mUser.setDelFlg(DelFlag.OFF.getVal());
+        // パスワードを平文からハッシュ化して登録
+        mUser.setPassword(passwordEncoder.encode(mUser.getPassword()));
         userService.updateUser(mUser);
 
+        // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
         res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -315,14 +363,17 @@ public class AdminController {
      */
     @RequestMapping(value = "/user-delete", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteUser(@RequestParam(value = "userIds") List<String> userIds) {
+    public ResponseEntity<Map<String, Object>> deleteUser(
+            @RequestParam(value = "userIds") List<Integer> userIds) {
 
-    	log.debug("deleteUser: {}", userIds);
+        log.debug("deleteUser: {}", userIds.stream().map(s -> s + " ").collect(Collectors.toList()));
 
-    	for (String userId : userIds) {
-    		userService.deleteUser(Integer.parseInt(userId));
-    	}
+        for (Integer userId : userIds) {
+            // 1ユーザずつ削除を実行する
+            userService.deleteUser(userId);
+        }
 
+        // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
         res.put("status", "OK");
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -330,16 +381,17 @@ public class AdminController {
 
     /**
      * 組織選択Select2データソースを取得する。
+     * @param q 組織名検索ワード
      * @return 組織選択Select2データソース
      */
     @RequestMapping(value = "/orgs/select2", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String name) {
+    public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String q) {
 
-        log.debug("request param name: {}", name);
+        log.debug("request param name: {}", q);
 
         Map<String, Object> res = new HashMap<>();
 
-        List<Map<String, Object>> data = orgService.findOrgs(name).stream()
+        List<Map<String, Object>> data = orgService.findOrgs(q).stream()
                 .map(org -> {
                     Map<String, Object> item = new HashMap<>();
                     item.put("id", org.getOrgCd());
@@ -354,6 +406,8 @@ public class AdminController {
 
     /**
      * ユーザ選択Select2データソースを取得する。
+     * @param orgCd 組織コード
+     * @param name ユーザ名検索ワード
      * @return ユーザ選択Select2データソース
      */
     @RequestMapping(value = "/users/select2", method = RequestMethod.GET)
@@ -401,31 +455,24 @@ public class AdminController {
     /**
      * リスト出力画面を表示する。
      * @param listOutputForm リスト出力フォーム
-     * @param model モデル
      * @return リスト出力画面
      */
     @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
-    public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
-
-        log.debug("listOutputForm : {} :", listOutputForm);
-
+    public String listOutput() {
         return "admin/listOutput";
     }
 
     /**
      * 勤怠情報をCSV形式で出力する.
-     * @param listOutputForm リスト出力フォーム
-     * @param model モデル
+     * @param outputYearMonth 出力年月(yyyymm)
      * @return CSV形式の勤怠情報
      * @throws JsonProcessingException CSV変換時の例外
      */
     @RequestMapping(value = "/attendance.csv", method = RequestMethod.GET, produces = "text/csv; charset=SHIFT-JIS; Content-Disposition: attachment")
     @ResponseBody
-    public Object attendanceCsv(@Valid ListOutputForm listOutputForm,
-            BindingResult bindingResult,
-            Model model) throws JsonProcessingException {
+    public Object attendanceCsv(String outputYearMonth) throws JsonProcessingException {
 
-        log.debug("attendanceCsv : {} :", listOutputForm);
+        log.debug("request param outputYearMonth : {} :", outputYearMonth);
 
         // ユーザごとの1日分の勤怠情報(DayAttendanceDto)を1行としたリストを取得し、CsvMapperでCSV化してリターン
         CsvMapper mapper = new CsvMapper();
@@ -433,7 +480,7 @@ public class AdminController {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         CsvSchema schema = mapper.schemaFor(DayAttendanceDto.class).withHeader();
         return mapper.writer(schema)
-                .writeValueAsString(listOutputService.getDayAttendanceList(listOutputForm.getOutputYearMonth()));
+                .writeValueAsString(listOutputService.getDayAttendanceList(outputYearMonth));
     }
 
     /**
@@ -455,6 +502,7 @@ public class AdminController {
      * @return ResponseEntity
      */
     private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         Map<String, List> errors = result.getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)),
                         (a, b) -> {

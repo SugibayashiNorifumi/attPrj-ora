@@ -3,8 +3,7 @@ $(function() {
         format: 'yyyymm',
         language: 'ja',
         autoclose: true,
-        minViewMode : 1,
-        startDate: Date()
+        minViewMode : 1
     });
 
 });

@@ -1,15 +1,13 @@
 update m_user
-   set update_date = :updateDate
-    <#if password??>
+   set name = :name
       ,password = :password
-    </#if>
-    <#if mail??>
       ,mail = :mail
-    </#if>
-    <#if lineId??>
+      ,auth_cd = :authCd
+      ,org_cd = :orgCd
+      ,manager_id = :managerId
       ,line_id = :lineId
-    </#if>
-    <#if lineId??>
       ,del_flg = :delFlg
-    </#if>
+      ,update_date = :updateDate
+      ,update_user_id = :updateUserId
+      ,update_func_cd = :updateFuncCd
 where user_id = :userId

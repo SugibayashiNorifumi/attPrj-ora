@@ -35,6 +35,9 @@ public class MUserDao extends AbstractDao<MUser> {
      * @return ユーザ
      */
     public MUser getByPk(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
         Optional<MUser> select = selectByPk(userId);
         MUser res = null;
         if (select.isPresent()) {
@@ -98,6 +101,12 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
+    /**
+     * ユーザを検索する。
+     * @param orgCd 組織コード
+     * @param name ユーザ名
+     * @return 検索結果
+     */
     public List<UserInfoDto> findUsers(String orgCd, String name) {
         Map<String, Object> cond = new HashMap<>();
         cond.put("orgCd", orgCd);
@@ -107,14 +116,31 @@ public class MUserDao extends AbstractDao<MUser> {
         return sqlTemplate.forList("sql/MUserDao/findUsers.sql", UserInfoDto.class, cond);
     }
 
+    /**
+     * ユーザを新規登録する。
+     * @param ユーザエンティティ
+     */
     public int insert(MUser entity) {
         setInsertColumns(entity);
         return sqlTemplate.update("sql/MUserDao/insert.sql", entity);
     }
 
+    /**
+     * ユーザを更新する。
+     * @param ユーザエンティティ
+     */
     public int update(MUser entity) {
         setUpdateColumns(entity);
         return sqlTemplate.update("sql/MUserDao/update.sql", entity);
+    }
+
+    /**
+     * ユーザを更新する(null値は更新対象外)。
+     * @param ユーザエンティティ
+     */
+    public int updateAsNullIsExclude(MUser entity) {
+        setUpdateColumns(entity);
+        return sqlTemplate.update("sql/MUserDao/updateAsNullIsExclude.sql", entity);
     }
 
     /**

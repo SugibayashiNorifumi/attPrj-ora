@@ -18,7 +18,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="box box-default">
-            <form id="setting-form" class="form-horizontal"  action="#" th:action="@{/admin/attendance.csv}" th:object="${listOutputForm}" method="GET">
+            <form id="setting-form" class="form-horizontal"  action="#" th:action="@{/admin/attendance.csv}" method="GET">
                 <div class="box-header with-border">
                     <h3 class="box-title">
                         リスト出力
@@ -28,7 +28,7 @@
                     <div class="form-group" id="yearMonthPicker">
                         <div class="col-sm-9 form-inline">
                             <div class="input-group date">
-                                <input type="text" class="form-control" placeholder="yyyymm" name="outputYearMonth" th:field="*{outputYearMonth}"/>
+                                <input type="text" class="form-control" placeholder="yyyymm" name="outputYearMonth"/>
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
