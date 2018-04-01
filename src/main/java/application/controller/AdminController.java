@@ -92,13 +92,24 @@ public class AdminController {
     }
 
     /**
-     * ログインエラーを返す。
+     * 認証情報不一致によるログインエラーを返す。
      * @param model モデル
      * @return ログイン画面
      */
     @RequestMapping(value = "/login-error", method = RequestMethod.GET)
     public String loginError(Model model) {
         model.addAttribute("loginFailedErrorMsg", "ユーザIDまたはパスワードが正しくありません。");
+        return "admin/login";
+    }
+
+    /**
+     * システムの問題によるログインエラーを返す。
+     * @param model モデル
+     * @return ログイン画面
+     */
+    @RequestMapping(value = "/login-impossible", method = RequestMethod.POST)
+    public String loginImpossible(Model model) {
+        model.addAttribute("loginFailedErrorMsg", "現在ご利用できません。");
         return "admin/login";
     }
 
