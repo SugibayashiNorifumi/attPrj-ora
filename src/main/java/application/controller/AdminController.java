@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -253,7 +254,15 @@ public class AdminController {
         }
 
         MOrg mOrg = modelMapper.map(orgForm, MOrg.class); // フォームクラスからエンティティクラスにマッピングする
-        orgService.registerOrg(mOrg); // 登録処理を呼び出す
+        try {
+        	orgService.registerOrg(mOrg); // 登録処理を呼び出す
+        } catch (DuplicateKeyException e) {
+            // キー重複エラーを伝える
+            Map<String, Object> res = new HashMap<>();
+            res.put("status", "NG");
+            res.put("message", "すでに同じ組織コードの組織が登録されています。別の値を指定してください。");
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
 
         // 処理成功を返す
         Map<String, Object> res = new HashMap<>();
@@ -329,7 +338,15 @@ public class AdminController {
         }
 
         MUser mUser = modelMapper.map(userForm, MUser.class);
-        userService.registerUser(mUser);
+        try {
+        	userService.registerUser(mUser);
+        } catch (DuplicateKeyException e) {
+            // キー重複エラーを伝える
+            Map<String, Object> res = new HashMap<>();
+            res.put("status", "NG");
+            res.put("message", "すでに同じユーザIDのユーザが登録されています。別の値を指定してください。");
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
 
         // 処理成功を伝える
         Map<String, Object> res = new HashMap<>();
@@ -357,8 +374,6 @@ public class AdminController {
         }
 
         MUser mUser = modelMapper.map(userForm, MUser.class);
-        // パスワードを平文からハッシュ化して登録
-        mUser.setPassword(passwordEncoder.encode(mUser.getPassword()));
         userService.updateUser(mUser);
 
         // 処理成功を伝える

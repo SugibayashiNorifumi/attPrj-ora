@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +81,7 @@ public class UserService {
      * ユーザ情報を登録する。
      * @param user ユーザ情報
      */
-    public void registerUser(MUser user) {
+    public void registerUser(MUser user) throws DuplicateKeyException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         muserDao.insert(user);
     }

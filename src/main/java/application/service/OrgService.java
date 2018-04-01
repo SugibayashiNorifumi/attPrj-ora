@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ public class OrgService {
      * 組織を登録する。
      * @param org 組織データ
      */
-    public void registerOrg(MOrg org) {
+    public void registerOrg(MOrg org) throws DuplicateKeyException {
         mOrgDao.insert(org);
     }
 

@@ -29,11 +29,11 @@
                                 <label for="work-time-start" class="col-md-3 control-label">就業時刻</label>
                                 <div class="col-md-9 row">
                                     <div class="bootstrap-timepicker col-md-2">
-                                        <input id="work-time-start" type="text" class="form-control timepicker"  placeholder="開始時刻" name="startTime" th:field="*{startTime}"/>
+                                        <input id="work-time-start" type="text" class="form-control timepicker"  placeholder="開始時刻" name="startTime" th:field="*{startTime}" required="required"/>
                                     </div>
                                     <label class="col-md-1 control-label">〜</label>
                                     <div class="bootstrap-timepicker col-md-2">
-                                        <input id="work-time-end" type="text" class="form-control timepicker"  placeholder="終了時刻" name="endTime" th:field="*{endTime}"/>
+                                        <input id="work-time-end" type="text" class="form-control timepicker"  placeholder="終了時刻" name="endTime" th:field="*{endTime}" required="required"/>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                 <label for="work-alert-time" class="col-md-3 control-label">退勤アラート時刻</label>
                                 <div class="col-md-9 row">
                                     <div class="bootstrap-timepicker col-md-2">
-                                        <input id="work-alert-time" type="text" class="form-control timepicker"  placeholder="退勤アラート時刻" name="alertEndTime" th:field="*{alertEndTime}"/>
+                                        <input id="work-alert-time" type="text" class="form-control timepicker"  placeholder="退勤アラート時刻" name="alertEndTime" th:field="*{alertEndTime}" required="required"/>
                                     </div>
                                     <div class="checkbox col-md-10">
                                         <label for="alert-flag">

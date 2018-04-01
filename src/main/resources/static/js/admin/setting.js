@@ -3,7 +3,4 @@ $(function() {
         showMeridian: false,
         showInputs: false
     });
-
-    //$('.timepicker').val("");
-
 });

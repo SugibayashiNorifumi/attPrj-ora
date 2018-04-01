@@ -91,7 +91,7 @@ function handleRegisterOrg() {
 }
 
 /**
- * 組織登録処理実行。
+ * 組織を登録する。
  */
 function registerOrg() {
    var formId = "org-register-form";
@@ -106,9 +106,13 @@ function registerOrg() {
           data: $form.serialize()
           }).done(function(res) {
               removeLoading(formId);
-              showInfoMessage("登録しました");
-	          findOrg();
-              $('#modal-org-form').modal('hide');
+        	  if (res.status == 'NG') {
+        		  showInfoMessage(res.message);
+        	  } else {
+                  showInfoMessage("登録しました");
+    	          findOrg();
+                  $('#modal-org-form').modal('hide');
+        	  }
           }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
               removeLoading(formId);
               showInfoMessage("登録に失敗しました");
@@ -149,7 +153,7 @@ function handleUpdateOrg() {
 }
 
 /**
- * 組織更新処理実行
+ * 組織を更新する。
  */
 function updateOrg() {
 	   var formId = "org-register-form";
@@ -184,7 +188,7 @@ function handleDeleteOrg(orgCd) {
 }
 
 /**
- * 組織削除処理実行
+ * 組織を削除する。
  * @param targetOrgCd 対象の組織コード
  */
 function deleteOrg() {
@@ -222,7 +226,7 @@ function handleRegisterUser() {
 }
 
 /**
- * ユーザ登録処理実行。
+ * ユーザを登録する。
  */
 function registerUser() {
    var formId = "user-register-form";
@@ -236,10 +240,14 @@ function registerUser() {
           method: 'POST',
           data: $form.serialize()
           }).done(function(res) {
-              removeLoading(formId);
-              showInfoMessage("登録しました");
-	          findUser(selectedOrgCd);
-              $('#modal-user-form').modal('hide');
+    		  removeLoading(formId);
+        	  if (res.status == 'NG') {
+        		  showInfoMessage(res.message);
+        	  } else {
+        		  showInfoMessage("登録しました");
+        		  findUser(selectedOrgCd);
+        		  $('#modal-user-form').modal('hide');
+        	  }
           }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
               removeLoading(formId);
               showInfoMessage("登録に失敗しました");
@@ -404,19 +412,5 @@ $(function() {
         },
         minimumResultsForSearch: 100 // 検索枠を表示させないようにするために設定
     });
-
-//    $('#modal-org-form').bootstrapValidator({
-//        live: 'enabled',
-//        fields: {
-//        	orgCd: {
-//                validators: {
-//                    notEmpty: { message: '組織コードは必須です' }
-//                }
-//            }
-//        }
-//    });
-//    $('#org-register-button').click(function() {
-//        $('#modal-org-form').bootstrapValidator('validate');
-//    });
 
 });
