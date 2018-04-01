@@ -46,10 +46,20 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
+    /**
+     * メールアドレスでユーザを取得する。
+     * @param mail
+     * @return ユーザ
+     */
     public Optional<MUser> selectByMail(String mail) {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByMail.sql", MUser.class, mail));
     }
 
+    /**
+     * LINE IDでユーザを取得する。
+     * @param lineId LINE ID
+     * @return ユーザ
+     */
     public Optional<MUser> selectByLineId(String lineId) {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByLineId.sql", MUser.class, lineId));
     }
