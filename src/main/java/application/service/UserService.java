@@ -3,6 +3,7 @@ package application.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,14 +58,27 @@ public class UserService {
      * LINE IDを登録する。
      * @param userId 対象ユーザID
      * @param lineId LINE ID
+     * @return LINEアカウントが使用済のため登録できない場合
      */
-    public void registerLineId(Integer userId, String lineId) {
-        muserDao.selectByPk(userId).ifPresent(muser -> {
+    public boolean registerLineId(Integer userId, String lineId) {
+        MUser user = muserDao.getByPk(userId);
+        if (StringUtils.equals(user.getLineId(), lineId)) {
+            // 既に登録済
+            return true;
+        }
+
+        MUser userChk = muserDao.getByLineId(lineId);
+        if (userChk == null) {
+            // 通常の登録
             MUser entity = new MUser();
             entity.setUserId(userId);
             entity.setLineId(lineId);
             muserDao.updateAsNullIsExclude(entity);
-        });
+        } else {
+            // 他ユーザでLINEアカウントを利用済
+            return false;
+        }
+        return true;
     }
 
     /**
