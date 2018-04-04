@@ -42,5 +42,5 @@ public class AbstractEntity implements Serializable {
     private String updateFuncCd;
 
     /** 論理削除フラグ */
-    private String delFlg;
+    private String delFlg = "0";
 }

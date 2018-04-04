@@ -1,5 +1,6 @@
 package application.form;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.StringUtils;
 
 import lombok.Data;
@@ -9,13 +10,19 @@ import lombok.Data;
  */
 @Data
 public class SettingForm {
+	@NotEmpty
     private String openTime;
+	@NotEmpty
     private String openMinutes;
+	@NotEmpty
     private String closeTime;
+	@NotEmpty
     private String closeMinutes;
     private String alertOpenTime;
     private String alertOpenMinutes;
+	@NotEmpty
     private String alertCloseTime;
+	@NotEmpty
     private String alertCloseMinutes;
     private String businessFlagMon;
     private String businessFlagTue;

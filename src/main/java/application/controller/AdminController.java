@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,32 +49,48 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
+    /** パスワードエンコーダー。 */
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /** モデルマッパー。*/
     @Autowired
     private ModelMapper modelMapper;
 
+    /** ユーザサービス。*/
     @Autowired
     private UserService userService;
 
+    /** 組織サービス。*/
     @Autowired
     private OrgService orgService;
 
+    /** 区分サービス。*/
     @Autowired
     private DivisionService divisionService;
 
+    /** 設定サービス。*/
     @Autowired
     private SettingService settingService;
 
+    /** リスト出力サービス。*/
     @Autowired
     private ListOutputService listOutputService;
 
+    /**
+     * ログイン画面を表示する。
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model) {
+    public String login() {
         return "admin/login";
     }
 
+    /**
+     * 認証情報不一致によるログインエラーを返す。
+     * @param model モデル
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login-error", method = RequestMethod.GET)
     public String loginError(Model model) {
         model.addAttribute("loginFailedErrorMsg", "ユーザIDまたはパスワードが正しくありません。");
@@ -81,9 +98,20 @@ public class AdminController {
     }
 
     /**
+     * システムの問題によるログインエラーを返す。
+     * @param model モデル
+     * @return ログイン画面
+     */
+    @RequestMapping(value = "/login-impossible", method = RequestMethod.POST)
+    public String loginImpossible(Model model) {
+        model.addAttribute("loginFailedErrorMsg", "現在ご利用できません。");
+        return "admin/login";
+    }
+
+    /**
      * ユーザ・組織管理画面表示.
      *
-     * @return 画面のパス
+     * @return ユーザ・組織管理画面
      */
     @RequestMapping(value = "/user-org")
     public String getUserOrg(Model model) {
@@ -139,14 +167,15 @@ public class AdminController {
      * 設定画面を開く。
      *
      * @param settingForm 設定フォーム
-     * @return 画面のパス
+     * @return 設定画面
      */
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
     public String setting(@ModelAttribute SettingForm settingForm) {
 
+        // 設定を読み込む。すでに設定しているものがなければ生成する。
         MSetting mSetting = settingService.getSetting().orElse(new MSetting());
 
-        modelMapper.map(mSetting, settingForm);
+        modelMapper.map(mSetting, settingForm); // エンティティからフォームにマッピングする
 
         log.debug("settingForm : {} :", settingForm);
 
@@ -165,21 +194,24 @@ public class AdminController {
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
+            log.debug("validate error: {}", bindingResult.toString());
+            // 入力チェックエラーを返す
             return "admin/setting";
         }
 
-        MSetting setting = modelMapper.map(settingForm, MSetting.class);
 
-        settingService.registerSetting(setting);
+        MSetting setting = modelMapper.map(settingForm, MSetting.class); // フォームクラスからエンティティクラスにマッピングする
+        settingService.registerSetting(setting); // 登録処理を実行
 
+        // 処理成功を返す
         redirectAttributes.addFlashAttribute("updateSuccessMsg", "保存が完了しました");
-
         return "redirect:/admin/setting";
     }
 
     /**
      * 組織を登録する。
      * @param orgForm 組織フォーム
+     * @param bindingResult バインド結果
      * @return 登録結果
      */
     @RequestMapping(value = "/orgs", method = RequestMethod.POST)
@@ -192,11 +224,13 @@ public class AdminController {
     /**
      * 組織を更新する。
      * @param orgForm 組織フォーム
+     * @param bindingResult バインド結果
      * @return 更新結果
      */
     @RequestMapping(value = "/org-update", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateOrgs(OrgForm orgForm) {
+    public ResponseEntity<Map<String, Object>> updateOrgs(@Valid @ModelAttribute OrgForm orgForm,
+            BindingResult bindingResult) {
 
         return null;
     }
@@ -221,7 +255,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> registerUser(@Valid UserForm userForm,
+    public ResponseEntity<Map<String, Object>> registerUser(@Valid @ModelAttribute UserForm userForm,
             BindingResult bindingResult) {
 
         return null;
@@ -230,11 +264,15 @@ public class AdminController {
     /**
      * ユーザを更新する。
      * @param userForm ユーザフォーム
+     * @param bindingResult バインド結果
      * @return 更新結果
      */
     @RequestMapping(value = "/user-update", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateUser(UserForm userForm) {
+    public ResponseEntity<Map<String, Object>> updateUser(@Valid @ModelAttribute UserForm userForm,
+            BindingResult bindingResult) {
+
+        log.debug("requested user form: {}", userForm);
 
         return null;
     }
@@ -246,23 +284,27 @@ public class AdminController {
      */
     @RequestMapping(value = "/user-delete", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteUser(@RequestParam(value = "userIds") List<String> userIds) {
+    public ResponseEntity<Map<String, Object>> deleteUser(
+            @RequestParam(value = "userIds") List<Integer> userIds) {
 
         return null;
     }
 
     /**
      * 組織選択Select2データソースを取得する。
+     * @param q 組織名検索ワード
      * @return 組織選択Select2データソース
      */
     @RequestMapping(value = "/orgs/select2", method = RequestMethod.GET)
-    public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String name) {
+    public @ResponseBody Map<String, Object> getOrgSelect2Data(@RequestParam(required = false) String q) {
 
         return null;
     }
 
     /**
      * ユーザ選択Select2データソースを取得する。
+     * @param orgCd 組織コード
+     * @param name ユーザ名検索ワード
      * @return ユーザ選択Select2データソース
      */
     @RequestMapping(value = "/users/select2", method = RequestMethod.GET)
@@ -285,27 +327,23 @@ public class AdminController {
     /**
      * リスト出力画面を表示する。
      * @param listOutputForm リスト出力フォーム
-     * @param model モデル
      * @return リスト出力画面
      */
     @RequestMapping(value = "/listOutput", method = RequestMethod.GET)
-    public String listOutput(@ModelAttribute ListOutputForm listOutputForm, Model model) {
+    public String listOutput() {
 
         return null;
     }
 
     /**
      * 勤怠情報をCSV形式で出力する.
-     * @param listOutputForm リスト出力フォーム
-     * @param model モデル
+     * @param outputYearMonth 出力年月(yyyymm)
      * @return CSV形式の勤怠情報
      * @throws JsonProcessingException CSV変換時の例外
      */
     @RequestMapping(value = "/attendance.csv", method = RequestMethod.GET, produces = "text/csv; charset=SHIFT-JIS; Content-Disposition: attachment")
     @ResponseBody
-    public Object attendanceCsv(@Valid ListOutputForm listOutputForm,
-            BindingResult bindingResult,
-            Model model) throws JsonProcessingException {
+    public Object attendanceCsv(String outputYearMonth) throws JsonProcessingException {
 
         return null;
     }
@@ -329,6 +367,7 @@ public class AdminController {
      * @return ResponseEntity
      */
     private ResponseEntity<Map<String, Object>> genValidationErrorResponse(BindingResult result) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         Map<String, List> errors = result.getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, error -> new ArrayList<>(Arrays.asList(error)),
                         (a, b) -> {

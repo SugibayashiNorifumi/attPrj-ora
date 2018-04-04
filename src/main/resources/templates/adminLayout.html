@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="jp" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>勤怠管理システム</title>
     <meta name="robots" content="noindex"/>
@@ -49,6 +50,9 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <li>
+                      <span class="navbar-brand" style="font-size:12px;">ログインユーザ：<span sec:authentication="principal.user.name"></span></span>
+                    </li>
                     <li>
                         <a href="#" th:href="@{/admin/logout}">ログアウト</a>
                     </li>

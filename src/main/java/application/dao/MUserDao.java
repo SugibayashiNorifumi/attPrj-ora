@@ -30,6 +30,9 @@ public class MUserDao extends AbstractDao<MUser> {
      * @return ユーザ
      */
     public MUser getByPk(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
         Optional<MUser> select = selectByPk(userId);
         MUser res = null;
         if (select.isPresent()) {
@@ -38,10 +41,20 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
+    /**
+     * メールアドレスでユーザを取得する。
+     * @param mail
+     * @return ユーザ
+     */
     public Optional<MUser> selectByMail(String mail) {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByMail.sql", MUser.class, mail));
     }
 
+    /**
+     * LINE IDでユーザを取得する。
+     * @param lineId LINE ID
+     * @return ユーザ
+     */
     public Optional<MUser> selectByLineId(String lineId) {
         return Optional.ofNullable(sqlTemplate.forObject("sql/MUserDao/selectByLineId.sql", MUser.class, lineId));
     }
@@ -60,11 +73,19 @@ public class MUserDao extends AbstractDao<MUser> {
         return res;
     }
 
+    /**
+     * ユーザを新規登録する。
+     * @param ユーザエンティティ
+     */
     public int insert(MUser entity) {
         setInsertColumns(entity);
         return sqlTemplate.update("sql/MUserDao/insert.sql", entity);
     }
 
+    /**
+     * ユーザを更新する。
+     * @param ユーザエンティティ
+     */
     public int update(MUser entity) {
         setUpdateColumns(entity);
         return sqlTemplate.update("sql/MUserDao/update.sql", entity);

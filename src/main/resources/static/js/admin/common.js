@@ -68,3 +68,22 @@ function confirmBeforeSubmit(formId, message, action) {
             });
   }
 }
+/**
+ * 情報メッセージを表示する。
+ */
+function showInfoMessage(message) {
+    $.confirm({
+        title: '',
+        content: message,
+        icon: 'fa fa-info-circle',
+        animation: 'scale',
+        closeAnimation: 'scale',
+        opacity: 0.5,
+        buttons: {
+          'confirm': {
+            text: 'OK',
+            btnClass: 'btn-blue',
+          }
+        }
+      });
+}

@@ -161,9 +161,11 @@ public class WebController {
         httpSession.setAttribute(ACCESS_TOKEN, token);
         logger.debug("access token: " + token);
 
-        userService.registerLineId(userId, lineId);
-
+        boolean isSuccess = userService.registerLineId(userId, lineId);
+        if (isSuccess) {
         return "redirect:/user/success";
+    }
+        return "redirect:/user/line_unavailable";
     }
 
     /**
@@ -201,6 +203,15 @@ public class WebController {
     @RequestMapping("/loginCancel")
     public String loginCancel() {
         return "user/login_cancel";
+    }
+
+    /**
+     * LINEアカウントを紐付けできない状況の受信。
+     * @return 表示画面
+     */
+    @RequestMapping("/line_unavailable")
+    public String lineUnavailable() {
+        return "user/line_unavailable";
     }
 
     /**

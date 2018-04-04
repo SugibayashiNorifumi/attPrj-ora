@@ -1,6 +1,7 @@
 package application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,14 @@ public class DivisionService {
      */
     public List<MDivDetail> getAuthList() {
         return mDivDao.findDetailById(Division.AUTH.getId());
+    }
+
+    /**
+     * 権限コード区分明細を取得する。
+     * @param divCd 区分コード
+     * @return 区分明細情報
+     */
+    public Optional<MDivDetail> getAuth(String divCd) {
+        return Optional.ofNullable(mDivDao.findDetailByIdAndCd(Division.AUTH.getId(), divCd));
     }
 }

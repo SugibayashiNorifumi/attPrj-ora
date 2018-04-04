@@ -42,7 +42,7 @@
                 </a>
             </td>
             <td class="vert-align col-md-1">
-                <i class="fa fa-minus text-danger" onclick="deleteOrg('{{:orgCd}}')"></i>
+                <i class="fa fa-minus text-danger" onclick="handleDeleteOrg('{{:orgCd}}')"></i>
             </td>
         </tr>
     </script>
@@ -50,7 +50,7 @@
     <script id="user-record-tmpl" type="text/x-jsrender">
         <tr>
             <td class="vert-align col-md-1">
-                <input type="checkbox" name="userIds" value="{{:userId}}"/>
+                <input type="checkbox" name="userIds" value="{{:userId}}" class="checkUser"/>
             </td>
             <td class="vert-align col-md-2">
                 {{:userId}}

@@ -86,15 +86,28 @@ public class AttendanceMenuService extends AbstractAttendanceService {
         String replyToken = evt.getReplyToken();
         String lineId = evt.getSource().getUserId();
 //        TLineStatus lineStatus = getLineSutatus(lineId);
+//        if (lineStatus.getUserId() == null) {
+//            //接続検証時はパス
+//            return;
+//        }
+//
 //        MenuCd menuCd = MenuCd.get(lineStatus.getMenuCd());
-//        switch (menuCd) {
-//        case REWRITING:
-//            attendanceRewritingService.editAction(lineId, replyToken, lineStatus, text);
-//            break;
-//        case LIST_OUTPUT:
-//            attendanceListService.listAction(lineId, replyToken, lineStatus, text);
-//            break;
-//        default:
+//        boolean isDefault = false;
+//        if (menuCd == null) {
+//            isDefault = true;
+//        } else {
+//            switch (menuCd) {
+//            case REWRITING:
+//                attendanceRewritingService.editAction(lineId, replyToken, lineStatus, text);
+//                break;
+//            case LIST_OUTPUT:
+//                attendanceListService.listAction(lineId, replyToken, lineStatus, text);
+//                break;
+//            default:
+//                isDefault = true;
+//            }
+//        }
+//        if (isDefault) {
 //            // ステータス設定
 //            lineStatus.setMenuCd("empty");
 //            lineStatus.setActionName(null);
@@ -104,8 +117,7 @@ public class AttendanceMenuService extends AbstractAttendanceService {
 //            // 対象なし
 //            String msg = AppMesssageSource.getMessage("line.selectMenu");
 //            LineAPIService.repryMessage(replyToken, msg);
-//            break;
-        }
+//        }
     }
 
 //    /**

@@ -28,8 +28,8 @@ public class UserService {
      * @param userId ユーザID
      * @return ユーザ情報
      */
-    public MUser getUserByUserId(Integer userId) {
-        return muserDao.getByPk(userId);
+    public Optional<MUser> getUserByUserId(Integer userId) {
+        return Optional.ofNullable(muserDao.getByPk(userId));
     }
 
     /**
@@ -54,13 +54,26 @@ public class UserService {
      * LINE IDを登録する。
      * @param userId 対象ユーザID
      * @param lineId LINE ID
+     * @return LINEアカウントが使用済のため登録できない場合
      */
-    public void registerLineId(Integer userId, String lineId) {
-        muserDao.selectByPk(userId).ifPresent(muser -> {
+    public boolean registerLineId(Integer userId, String lineId) {
+        MUser user = muserDao.getByPk(userId);
+        if (StringUtils.equals(user.getLineId(), lineId)) {
+            // 既に登録済
+            return true;
+        }
+
+        MUser userChk = muserDao.getByLineId(lineId);
+        if (userChk == null) {
+            // 通常の登録
             MUser entity = new MUser();
             entity.setUserId(userId);
             entity.setLineId(lineId);
-            muserDao.update(entity);
-        });
+            muserDao.updateAsNullIsExclude(entity);
+        } else {
+            // 他ユーザでLINEアカウントを利用済
+            return false;
+        }
+        return true;
     }
 }
