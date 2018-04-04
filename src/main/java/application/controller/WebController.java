@@ -163,8 +163,8 @@ public class WebController {
 
         boolean isSuccess = userService.registerLineId(userId, lineId);
         if (isSuccess) {
-        return "redirect:/user/success";
-    }
+            return "redirect:/user/success";
+        }
         return "redirect:/user/line_unavailable";
     }
 
