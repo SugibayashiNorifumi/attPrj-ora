@@ -90,4 +90,13 @@ public class MUserDao extends AbstractDao<MUser> {
         setUpdateColumns(entity);
         return sqlTemplate.update("sql/MUserDao/update.sql", entity);
     }
+
+    /**
+     * ユーザを更新する(null値は更新対象外)。
+     * @param ユーザエンティティ
+     */
+    public int updateAsNullIsExclude(MUser entity) {
+        setUpdateColumns(entity);
+        return sqlTemplate.update("sql/MUserDao/updateAsNullIsExclude.sql", entity);
+    }
 }
